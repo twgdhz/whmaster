@@ -20,9 +20,10 @@ public class Constants {
 //      public static final String apiHead = "http://139.224.13.216/"; //华信测试环境
 //      public static final String apiHead = "http://192.168.2.30:8085/";
 //      public static final String apiHead = "http://172.19.12.164/";//研发环境
-//        public static final String apiHead = "http://rdotms.tianlu56.com.cn/";//研发环境公网
-      public static final String apiHead = "http://139.196.142.179/";//测试环境公网
-//      public static final String apiHead = "http://172.19.12.180/";//测试环境
+        public static final String apiHead = "http://rdotms.tianlu56.com.cn/";//研发环境公网
+//      public static final String apiHead = "http://139.196.142.179/";//预生产环境公网
+//      public static final String apiHead = "http://172.19.12.180/";//预生产环境
+//        public static final String apiHead = "https://otms.tianlu56.com.cn/";//生产环境
     //登陆
     public static final String login = apiHead + "sys/sys/loginApp";
     //是否登录
@@ -95,6 +96,13 @@ public class Constants {
     public static final String addGenerateList = apiHead + "wh/stockIn/app/add";
     //实物收货数量获取
     public static final String queryUnfinishedMaterialCount = apiHead + "order/orderIn/app/queryUnfinishedMaterialCount";
+
+    //获取仓库
+    public static final String queryWarehouse = apiHead + "order/orderIn/queryWarehouseByorgId";
+    //获取库区
+    public static final String queryRegion = apiHead + "order/orderIn/queryRegionListByWharehouseId";
+    //获取Position库位
+    public static final String queryPosition = apiHead + "order/orderIn/queryPositoinByRegionId";
     public static Object getGsonObject(String json, Object o) {
         Gson g = new Gson();
         o = g.fromJson(json, o.getClass());

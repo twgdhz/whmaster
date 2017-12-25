@@ -362,6 +362,7 @@ public class GenerateSjRkListActivity extends BaseActivity implements IMvpView {
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString("orderInId",mList.get(position).get("orderInId")+"");
+                        bundle.putString("buyerId",mList.get(position).get("buyerId")+"");
                         openActivityForResult(GenerateSlListActivity.class, 0, bundle);
                     }
                 });

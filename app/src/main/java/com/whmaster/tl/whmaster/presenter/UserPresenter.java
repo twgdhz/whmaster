@@ -37,6 +37,7 @@ public class UserPresenter extends BasePresenter implements UserInterface{
             @Override
             public void onError(Throwable e) {
                 Log.i("com.whmaster.tl.whmaster>>返回数据",e+"============");
+                mImvpView.onFail(e+"");
                 mImvpView.hideLoading();
             }
             @Override

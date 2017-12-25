@@ -41,7 +41,7 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
     private RecyAdapter mAdapter;
     private Button mSubBtn;
     private Bundle mBundle;
-    private String mOrderInId;
+    private String mOrderInId,mBuyerId;
     private StoragePresenter storagePresenter;
     private ArrayList<HashMap<String, Object>> mList, mKuList;
     private HashMap<String, Object> mMap;
@@ -100,6 +100,7 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
         mBundle = getIntent().getExtras();
         if (mBundle != null) {
             mOrderInId = mBundle.getString("orderInId");
+            mBuyerId = mBundle.getString("buyerId");
         }
     }
 
@@ -123,7 +124,7 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
                             map.put("InDetailId", mList.get(i).get("inDetailId") + "");
                         mDetailList.add(map);
                     }
-                    storagePresenter.addGenerateList(mOrderInId,mWharehouseId,mWharehouseName, JSON.toJSONString(mDetailList));
+                    storagePresenter.addGenerateList(mBuyerId,mOrderInId,mWharehouseId,mWharehouseName, JSON.toJSONString(mDetailList));
                } else {
                     mAlertDialog.builder().setTitle("提示")
                             .setMsg("你还有未分配库区或库位的货品")
@@ -153,7 +154,7 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
                             .isCenterLabel(true)//是否只显示中间选中项的label文字，false则每项item全部都带有label。
                             .setLinkage(true)//设置是否联动
                             .setContentTextSize(20)
-                            .setSelectOptions(2)  //设置默认选中项
+                            .setSelectOptions(0)  //设置默认选中项
 //                        .isDialog(true)//是否显示为对话框样式
                             .build();
                     pvOptions.setPicker(mWhareList);
@@ -238,7 +239,6 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
             case "wharehouse":
                 mWhareList = new ArrayList<>();
                 mKuList = (ArrayList<HashMap<String, Object>>) object;
-
                 for (int i = 0; i < mKuList.size(); i++) {
                     mWhareList.add(mKuList.get(i).get("wharehouseName").toString());
                 }

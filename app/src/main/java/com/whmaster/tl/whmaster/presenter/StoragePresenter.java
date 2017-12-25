@@ -401,9 +401,7 @@ public class StoragePresenter extends BasePresenter implements StorageInterface{
     public void getWharehouse(String wharehouseId) {
         Log.i("com.whmaster.tl.whmaster>>","======选择仓库ID======"+wharehouseId);
         Map map = new HashMap();
-        map.put("wharehouseId",wharehouseId);
-//        mImvpView.showLoading();
-        RetrofitHttp.getInstance(mContext).post(Constants.getWharehouse, map, new Subscriber<String>() {
+        RetrofitHttp.getInstance(mContext).post(Constants.queryWarehouse, map, new Subscriber<String>() {
             @Override
             public void onCompleted() {
                 mImvpView.hideLoading();
@@ -432,8 +430,73 @@ public class StoragePresenter extends BasePresenter implements StorageInterface{
     }
 
     @Override
-    public void addGenerateList(String orderInId, String wharehouseId, String wharehouseName,String detail) {
+    public void getRegion(String wharehouseId) {
         Map map = new HashMap();
+        map.put("wharehouseId",wharehouseId);
+        RetrofitHttp.getInstance(mContext).post(Constants.queryRegion, map, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                mImvpView.hideLoading();
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.i("com.whmaster.tl.whmaster>>",e+"======onError======");
+                mImvpView.hideLoading();
+                mImvpView.onFail(e+"");
+            }
+            @Override
+            public void onNext(String s) {
+                Log.i("com.whmaster.tl.whmaster>>获取库区",s+"====onNext====");
+                mHashMap = Constants.getJsonObject2(s);
+                if(mHashMap!=null){
+                    if(mHashMap.get("resultCode")!=null && mHashMap.get("resultCode").toString().equals("0")){
+                        mHashList = Constants.getJsonArray2(mHashMap.get("result").toString());
+                        mImvpView.onSuccess("getRegion",mHashList);
+                    }else{
+                        mImvpView.onFail(mHashMap.get("resultMsg")+"");
+                    }
+                }
+                mImvpView.hideLoading();
+            }
+        });
+    }
+
+    @Override
+    public void getPosition(String regionId) {
+        Map map = new HashMap();
+        map.put("regionId",regionId);
+        RetrofitHttp.getInstance(mContext).post(Constants.queryPosition, map, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                mImvpView.hideLoading();
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.i("com.whmaster.tl.whmaster>>",e+"======onError======");
+                mImvpView.hideLoading();
+                mImvpView.onFail(e+"");
+            }
+            @Override
+            public void onNext(String s) {
+                Log.i("com.whmaster.tl.whmaster>>获取库位",s+"====onNext====");
+                mHashMap = Constants.getJsonObject2(s);
+                if(mHashMap!=null){
+                    if(mHashMap.get("resultCode")!=null && mHashMap.get("resultCode").toString().equals("0")){
+                        mHashList = Constants.getJsonArray2(mHashMap.get("result").toString());
+                        mImvpView.onSuccess("getPosition",mHashList);
+                    }else{
+                        mImvpView.onFail(mHashMap.get("resultMsg")+"");
+                    }
+                }
+                mImvpView.hideLoading();
+            }
+        });
+    }
+
+    @Override
+    public void addGenerateList(String buyerId,String orderInId, String wharehouseId, String wharehouseName,String detail) {
+        Map map = new HashMap();
+        map.put("buyerId",buyerId);
         map.put("orderInId",orderInId);
         map.put("wharehouseId",wharehouseId);
         map.put("wharehouseName",wharehouseName);

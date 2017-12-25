@@ -30,8 +30,10 @@ public interface StorageInterface {
     void getStorageDetailList(String orderId);//入库单货品列表
 
     void getWharehouse(String wharehouseId);//仓库获取
+    void getRegion(String wharehouseId);//库区获取
+    void getPosition(String regionId);//库位获取
 
-    void addGenerateList(String orderInId,String wharehouseId,String wharehouseName,String detail);//生成上架单
+    void addGenerateList(String buyerId,String orderInId,String wharehouseId,String wharehouseName,String detail);//生成上架单
 
     void queryUnfinishedMaterialCount();//实物收货数量获取
 }
