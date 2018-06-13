@@ -6,6 +6,7 @@ package com.whmaster.tl.whmaster.impl;
 
 public interface UserInterface {
     public void login(String username, String password,String type);
+    public void loginToken(String username, String password,String type);
     public void islogin();
     public void loginout();
     public void perms();

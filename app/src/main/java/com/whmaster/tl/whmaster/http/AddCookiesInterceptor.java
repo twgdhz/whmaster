@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.whmaster.tl.whmaster.common.Constants;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -32,8 +34,9 @@ public class AddCookiesInterceptor implements Interceptor {
                     @Override
                     public void call(String cookie) {
                         //添加cookie 
-                        builder.addHeader("Cookie", cookie);
-//                        Log.i("com.whmaster.tl.whmaster>>",cookie+"=======添加cookie到header========");
+//                        builder.addHeader("Cookie", cookie);
+                        builder.addHeader("Cookie", Constants.token);
+//                        Log.i("com.whmaster.tl.whmaster>>",cookie+"=======添加cookie到header===11=====");
                     }
                 });
         return chain.proceed(builder.build());

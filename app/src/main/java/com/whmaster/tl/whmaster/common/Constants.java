@@ -2,12 +2,18 @@ package com.whmaster.tl.whmaster.common;
 
 
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.math.RoundingMode;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,39 +23,37 @@ import java.util.Iterator;
  * Created by Administrator on 2016/9/7.
  */
 public class Constants {
-//      public static final String apiHead = "http://139.224.13.216/"; //华信测试环境
-//      public static final String apiHead = "http://192.168.2.30:8085/";
-//      public static final String apiHead = "http://172.19.12.164/";//研发环境
-        public static final String apiHead = "http://rdotms.tianlu56.com.cn/";//研发环境公网
-//      public static final String apiHead = "http://139.196.142.179/";//预生产环境公网
-//      public static final String apiHead = "http://172.19.12.180/";//预生产环境
-//        public static final String apiHead = "https://otms.tianlu56.com.cn/";//生产环境
+    public static final String apiHead = "http://api.local.tianlu56.com.cn/";//测试环境
+//        public static final String apiHead = "https://wmsapi.tianlu56.com.cn/";//生产环境
+    public static String token = "",mUsername="",mPwd="";
     //登陆
-    public static final String login = apiHead + "sys/sys/loginApp";
+//    public static final String login = apiHead + "sys/sys/loginApp";
+    public static final String login = apiHead + "usc/user/login";
     //是否登录
     public static final String islogin = apiHead + "sys/isLogin";
     //注销
-    public static final String loginout = apiHead + "sys/logout";
+//    public static final String loginout = apiHead + "sys/logout";
+    public static final String loginout = apiHead + "usc/user/removeToken";
     //获取权限
     public static final String perms = apiHead + "sys/menu/perms";
     //入库单列表 page limit stockInCode
-    public static final String getStorageList = apiHead + "wh/stockIn/queryStockInTaskListByShelfUserId";
+    public static final String getStorageList = apiHead + "order/stockIn/queryStockInTaskListByShelfUserId";
     //入库单货品列表
-    public static final String getStorageProductList = apiHead + "wh/stockIn/queryStockInProductListById";
+    public static final String getStorageProductList = apiHead + "order/stockIn/queryStockInProductListById";
     //未完成入库任务数获取接口
     public static final String getStorageCount = apiHead + "wh/stockIn/queryUnfinishedStockInCount";
     //拣货出库任务数获取接口
     public static final String getTaskCount = apiHead + "wh/stockOut/task/count";
     //货品数量上架or拣货详情获取接口
-    public static final String queryStorePositionDetail = apiHead + "wh/stockIn/queryStorePositionDetail";
+    public static final String queryStorePositionDetail = apiHead + "order/stockIn/queryStorePositionDetail";
     //拣货单列表
     public static final String pickingList = apiHead + "wh/stockOut/task/list";
     //拣出货品列表
     public static final String pickingDetailList = apiHead + "wh/stockOut/detail/list";
     //数量上架
-    public static final String shelfProductStockInTask = apiHead + "wh/stockIn/shelfProductStockInTask";
+    public static final String shelfProductStockInTask = apiHead + "order/stockIn/shelfProductStockInTask";
     //入库执行完毕
-    public static final String executeStockInTask = apiHead + "wh/stockIn/executeStockInTask";
+    public static final String executeStockInTask = apiHead + "order/stockIn/executeStockInTask";
     //拣出货品
     public static final String executeStockOutTask = apiHead + "wh/stockOut/pick/num";
     //拣货执行完毕
@@ -65,9 +69,11 @@ public class Constants {
     //是否有权限
     public static final String isPermission = apiHead + "sys/position/checkUserHasPermissionByCode";
     //库位库存
-    public static final String queryWhStockInfoByCode = apiHead + "wh/stockLedger/queryWhStockInfoByCode";
+//    public static final String queryWhStockInfoByCode = apiHead + "wh/stockLedger/queryWhStockInfoByCode";
+    public static final String queryWhStockInfoByCode = apiHead + "whsc/app/inventory/list";
     //选择货品
-    public static final String getListByPositionCode = apiHead + "wh/goods/inventory/getListByPositionCode";
+//    public static final String getListByPositionCode = apiHead + "wh/goods/inventory/getListByPositionCode";
+    public static final String getListByPositionCode = apiHead + "whsc/app/inventory/product/list";
     //扫描完毕
     public static final String updateDeliveryLoadStatus = apiHead + "delivery/delivery/updateDeliveryLoadStatus";
     //装车完毕
@@ -78,7 +84,7 @@ public class Constants {
     public static final String checkIsSameWharehouseByCode = apiHead + "sys/position/checkIsSameWharehouseByCode";
     //移库完毕
     public static final String transferFinished = apiHead + "wh/transfer/transferFinished";
-    //实物收货
+    //实物收货列表
     public static final String goodsReceiptList = apiHead + "order/orderIn/app/material/list";
     //实物收货详情列表
     public static final String goodsgetDetailList = apiHead + "order/orderIn/app/material/getDetailList";
@@ -93,16 +99,51 @@ public class Constants {
     //获取仓库信息
     public static final String getWharehouse = apiHead + "order/orderIn/app/list/wharehouse";
     //生成上架单
-    public static final String addGenerateList = apiHead + "wh/stockIn/app/add";
+    public static final String addGenerateList = apiHead + "order/stockIn/app/add";
     //实物收货数量获取
     public static final String queryUnfinishedMaterialCount = apiHead + "order/orderIn/app/queryUnfinishedMaterialCount";
-
     //获取仓库
-    public static final String queryWarehouse = apiHead + "order/orderIn/queryWarehouseByorgId";
+//    public static final String queryWarehouse = apiHead + "order/orderIn/queryWarehouseByorgId";
+    public static final String queryWarehouse = apiHead + "whsc/app/warehouse/list/orgid";
     //获取库区
-    public static final String queryRegion = apiHead + "order/orderIn/queryRegionListByWharehouseId";
+//    public static final String queryRegion = apiHead + "order/orderIn/queryRegionListByWharehouseId";
+    public static final String queryRegion = apiHead + "whsc/app/region/list/warehouseid";
     //获取Position库位
-    public static final String queryPosition = apiHead + "order/orderIn/queryPositoinByRegionId";
+//    public static final String queryPosition = apiHead + "order/orderIn/queryPositoinByRegionId";
+    public static final String queryPosition = apiHead + "whsc/app/position/list/regionid";
+
+    //拣货出库数量
+    public static final String pickCount = apiHead + "order/pick/app/pickCount";
+    //复核数量
+    public static final String verifyCount = apiHead + "order/orderOut/app/verifyCount";
+
+    //拣货单列表
+    public static final String pickingListOrder = apiHead + "order/pick/app/listfmob";
+    //拣货单详情列表
+    public static final String pickingDetailListOrder = apiHead + "order/pick/app/pickDetlsfmob";
+    //拣货单货品详情
+    public static final String pickingDetail = apiHead + "order/pickDetl/app/info";
+    //拣货单详情任务完成
+    public static final String pickDetailupdateStatus = apiHead + "order/pick/app/updateStatus";
+    //确认拣货
+    public static final String pickingSave = apiHead + "order/pickDetl/app/save";
+    //拣货复核列表
+    public static final String reviewList = apiHead + "order/orderOut/app/verifyOrders";
+    //拣货复核详情列表
+    public static final String reviewDetailList = apiHead + "order/orderOut/app/orderDetls";
+    //复核货品详情
+    public static final String reviewInfo = apiHead + "order/orderOut/app/prod/info";
+    //确认复核货品详情
+    public static final String reviewInfoSave = apiHead + "order/orderOut/app/prod/save";
+    //完成复核详情任务
+    public static final String outUpdateStatus = apiHead + "order/orderOut/app/updateStatus";
+    //库位选择操作
+    public static final String getMovePosition = apiHead + "whsc/transferWarehouse/getMovePosition";
+    //根据选择的库位编码查询货品信息
+    public static final String getProductByPosition = apiHead + "whsc/transferWarehouse/getProductByPosition";
+    //移入库位
+    public static final String save = apiHead + "whsc/transferWarehouse/save";
+
     public static Object getGsonObject(String json, Object o) {
         Gson g = new Gson();
         o = g.fromJson(json, o.getClass());
@@ -149,7 +190,7 @@ public class Constants {
                 a = it.next().toString();
                 map.put(a, jsonObject.get(a).toString());
             }
-            map2 = getJsonObject(map.get("Data").toString());
+            map2 = getJsonObject(map.get("resultStatus").toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -197,5 +238,41 @@ public class Constants {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public static String md5(String string) {
+        if (TextUtils.isEmpty(string)) {
+            return "";
+        }
+        MessageDigest md5 = null;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            byte[] bytes = md5.digest(string.getBytes());
+            String result = "";
+            for (byte b : bytes) {
+                String temp = Integer.toHexString(b & 0xff);
+                if (temp.length() == 1) {
+                    temp = "0" + temp;
+                }
+                result += temp;
+            }
+            return result.toUpperCase();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String format2(String value) {
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.format(Double.parseDouble(value));
+    }
+    public static String format4(String value) {
+
+        DecimalFormat df = new DecimalFormat("0.0000");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.format(Double.parseDouble(value));
     }
 }

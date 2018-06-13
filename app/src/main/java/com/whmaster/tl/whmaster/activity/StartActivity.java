@@ -9,6 +9,7 @@ import android.support.v4.util.ArrayMap;
 import android.view.View;
 import android.widget.LinearLayout;
 import com.whmaster.tl.whmaster.R;
+import com.whmaster.tl.whmaster.common.Constants;
 import com.whmaster.tl.whmaster.presenter.UserPresenter;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
@@ -21,7 +22,7 @@ public class StartActivity extends BaseActivity implements IMvpView{
     private LinearLayout mTitleLayout;
     private SharedPreferences sp;
     private boolean isLogin = false;
-    private UserPresenter userPresenter;
+//    private UserPresenter userPresenter;
     private ArrayMap<String,Object> mMap;
     @Override
     protected int getLayoutId() {
@@ -31,11 +32,12 @@ public class StartActivity extends BaseActivity implements IMvpView{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userPresenter = new UserPresenter(this,this);
-        userPresenter.islogin();
+//        userPresenter = new UserPresenter(this,this);
+//        userPresenter.islogin();
         sp = getSharedPreferences("whmasterUser", Context.MODE_PRIVATE);
-        logcat(sp.getString("cookie",null)+"==============");
-
+        logcat(sp.getString("cookie",null)+"=======获取token=======");
+        Constants.token = sp.getString("cookie",null);
+        handler.sendEmptyMessageDelayed(1, 1200);
     }
 
     Handler handler = new Handler() {
@@ -44,13 +46,14 @@ public class StartActivity extends BaseActivity implements IMvpView{
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    if(isLogin){
-                        Bundle bundle = new Bundle();
-                        bundle.putString("username",sp.getString("name",null)+"");
-                        startActivity(MainActivity.class,bundle);
-                    }else{
-                        startActivity(LoginActivity.class,null);
-                    }
+                    startActivity(LoginActivity.class,null);
+//                    if(isLogin){
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("username",sp.getString("name",null)+"");
+//                        startActivity(MainActivity.class,bundle);
+//                    }else{
+//                        startActivity(LoginActivity.class,null);
+//                    }
                     finish();
                     break;
             }

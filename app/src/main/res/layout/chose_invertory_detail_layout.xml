@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/head_id"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/title_back_color">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color2"
+            android:layout_below="@+id/title"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@color/title_back_color"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="选盘-货品详情"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Choose thelinvertory-The item details"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back3"
+                android:orientation="vertical"
+                android:layout_marginTop="-50dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/whouse_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="货品名称货品名称货品名称货品名称货品名称货品名称"
+                    android:textColor="@color/back"
+                    android:textSize="16sp" />
+
+                <View
+                    android:id="@+id/dotted_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="11dp"
+                    android:background="@drawable/dash_line"
+                    android:layerType="software" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="3"
+                            android:ellipsize="end"
+                            android:gravity="left"
+                            android:singleLine="true"
+                            android:text="SKU"
+                            android:textColor="@color/color26"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/sku_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:textColor="@color/back"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="3"
+                            android:ellipsize="end"
+                            android:gravity="left"
+                            android:singleLine="true"
+                            android:text="仓库"
+                            android:textColor="@color/color26"
+                            android:textSize="15sp" />
+
+
+                        <TextView
+                            android:id="@+id/warehouse"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:textColor="@color/back"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="3"
+                            android:ellipsize="end"
+                            android:gravity="left"
+                            android:singleLine="true"
+                            android:text="库区"
+                            android:textColor="@color/color26"
+                            android:textSize="15sp" />
+
+
+                        <TextView
+                            android:id="@+id/kuqu_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:textColor="@color/back"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="3"
+                            android:ellipsize="end"
+                            android:gravity="left"
+                            android:singleLine="true"
+                            android:text="库位"
+                            android:textColor="@color/color26"
+                            android:textSize="15sp" />
+
+
+                        <TextView
+                            android:id="@+id/kuwei_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:textColor="@color/back"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="3"
+                            android:ellipsize="end"
+                            android:gravity="left"
+                            android:singleLine="true"
+                            android:text="当前库存"
+                            android:textColor="@color/color26"
+                            android:textSize="15sp" />
+
+
+                        <TextView
+                            android:id="@+id/current_kucun"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:text="4545"
+                            android:textColor="@color/red"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="3"
+                            android:ellipsize="end"
+                            android:gravity="left"
+                            android:singleLine="true"
+                            android:text="盘点库存"
+                            android:textColor="@color/back"
+                            android:textSize="15sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="4"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/right_reduce_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_reduce" />
+
+                            <LinearLayout
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:background="@mipmap/circle_edit"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp">
+
+                                <EditText
+                                    android:id="@+id/actual_num_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:gravity="center"
+                                    android:inputType="number"
+                                    android:singleLine="true"
+                                    android:text="0"
+                                    android:textColor="@color/back" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/right_add_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:src="@mipmap/ic_increase" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/memo_edit"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@drawable/back"
+                android:gravity="top"
+                android:hint="备注"
+                android:maxLines="10"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingTop="20dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+    <Button
+        android:id="@+id/sub_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_selector_style2"
+        android:text="确定"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+</RelativeLayout>

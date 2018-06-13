@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.whmaster.tl.whmaster.R;
-import com.whmaster.tl.whmaster.customview.LoginLoadingDialog;
+import com.whmaster.tl.whmaster.widget.LoginLoadingDialog;
 import com.whmaster.tl.whmaster.presenter.StoragePresenter;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
@@ -61,7 +61,7 @@ public class PickingGoodsShActivity extends BaseActivity implements IMvpView{
                 map.put("actNum",mRight+"");
                 map.put("storePositionId",storePositionId);
                 list.add(map);
-                storagePresenter.shelfProductStockInTask(mDetailId, JSON.toJSONString(list));
+                storagePresenter.pickAdd(mDetailId, JSON.toJSONString(list));
                 break;
             case R.id.left_add_image:
                 if (mLeft < mPlanLeft) {

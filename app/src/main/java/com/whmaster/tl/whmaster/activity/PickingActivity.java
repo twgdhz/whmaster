@@ -80,6 +80,7 @@ public class PickingActivity extends BaseActivity implements IMvpView{
             }
         });
         pickingPresenter.pickingList("",mType,page);
+        //
     }
 
     @Override
@@ -256,9 +257,12 @@ public class PickingActivity extends BaseActivity implements IMvpView{
                     Bundle bundle = new Bundle();
                     bundle.putString("stockInId",mList.get(position).get("stockOutId")+"");
                     if(mType.equals("50")){//捡出货品
+                        bundle.putString("sendType",mList.get(position).get("sendType")+"");
                         openActivityForResult(PickingGoodsActivity.class,0,bundle);
+//                        openActivityForResult(PickingGoodsDetailListActivity.class,0,bundle);
                     }else if(mType.equals("65")){//货品复核
-                        openActivityForResult(ReviewGoodsActivity.class,0,bundle);
+//                        openActivityForResult(ReviewGoodsActivity.class,0,bundle);
+                        openActivityForResult(ReviewGoodsDetailListActivity.class,0,bundle);
                     }
                 }
             });

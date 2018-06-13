@@ -41,7 +41,7 @@ public class ScanLibraryActivity extends BaseActivity implements IMvpView{
         switch (v.getId()){
             case R.id.scan_library_layout:
 //                Bundle bundle = new Bundle();
-//                bundle.putString("code","CK510112A-I01-17");
+//                bundle.putString("code","KW-jhx1-5544-5-5-4-4");
 //                startActivity(ScanLibraryListsActivity.class,bundle);
                 break;
         }
@@ -135,8 +135,11 @@ public class ScanLibraryActivity extends BaseActivity implements IMvpView{
                 if (!"".equals(str)) {
                     mPositionCode = str;
                     logcat("获取获取扫描条形码" + str);
-//                    libraryPresenter.isPermission("CK410188A-1-1");
-                    libraryPresenter.isPermission(mPositionCode);
+//                    libraryPresenter.isPermission(mPositionCode);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("code", mPositionCode);
+                    startActivity(ScanLibraryListsActivity.class, bundle);
 
                 }else{
                     Toast.makeText(ScanLibraryActivity.this,"请扫描正确的条形码！",Toast.LENGTH_SHORT).show();

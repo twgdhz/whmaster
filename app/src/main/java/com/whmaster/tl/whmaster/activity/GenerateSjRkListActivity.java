@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
+import com.whmaster.tl.whmaster.common.Constants;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.presenter.StoragePresenter;
 import com.whmaster.tl.whmaster.view.IMvpView;
@@ -216,7 +217,7 @@ public class GenerateSjRkListActivity extends BaseActivity implements IMvpView {
     @Override
     public void setHeader() {
         super.setHeader();
-        mTitle.setText("入库单生成");
+        mTitle.setText("上架单生成");
     }
 
     @Override
@@ -334,7 +335,7 @@ public class GenerateSjRkListActivity extends BaseActivity implements IMvpView {
                         false));
             } else if (viewType == 20) {
                 holder = new MyViewHolder2(LayoutInflater.from(
-                        GenerateSjRkListActivity.this).inflate(R.layout.storage_list_item, parent,
+                        GenerateSjRkListActivity.this).inflate(R.layout.rksj_list_item, parent,
                         false));
             }
             return holder;
@@ -348,27 +349,29 @@ public class GenerateSjRkListActivity extends BaseActivity implements IMvpView {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
             if (holder instanceof MyViewHolder1) {
-                if (mList.get(position).get("orderInCode") != null) {
-                    ((MyViewHolder1) holder).mOrderCode.setText("入库订单编号：" + mList.get(position).get("orderInCode").toString());
+                final ArrayMap<String,Object> map = Constants.getJsonObject(mList.get(position).get("orderInBase").toString());
+                if (map.get("orderInCode") != null) {
+                    ((MyViewHolder1) holder).mOrderCode.setText("入库订单编号：" + map.get("orderInCode"));
                 }
-                if (mList.get(position).get("buyerName") != null) {
-                    ((MyViewHolder1) holder).mProductName.setText("货主：" + mList.get(position).get("buyerName").toString());
+                if (map.get("buyerName") != null) {
+                    ((MyViewHolder1) holder).mProductName.setText("货主：" + map.get("buyerName"));
                 }
-                if (mList.get(position).get("totalCount") != null) {
-                    ((MyViewHolder1) holder).mProductNum.setText("货品数量：" + mList.get(position).get("totalCount").toString());
+                if (map.get("totalCount") != null) {
+                    ((MyViewHolder1) holder).mProductNum.setText("货品数量：" + map.get("totalCount"));
                 }
                 ((MyViewHolder1) holder).mContentLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("orderInId",mList.get(position).get("orderInId")+"");
-                        bundle.putString("buyerId",mList.get(position).get("buyerId")+"");
+                        bundle.putString("orderInId",map.get("orderInId")+"");
+                        bundle.putString("buyerId",map.get("buyerId")+"");
+                        bundle.putString("orgId",map.get("orgId")+"");
                         openActivityForResult(GenerateSlListActivity.class, 0, bundle);
                     }
                 });
             } else if (holder instanceof MyViewHolder2) {
-                if (mList.get(position).get("stockInCode") != null) {
-                    ((MyViewHolder2) holder).orderName.setText("入库订单编号：" + mList.get(position).get("stockInCode").toString());
+                if (mList.get(position).get("orderInCode") != null) {
+                    ((MyViewHolder2) holder).orderName.setText("入库订单编号：" + mList.get(position).get("orderInCode").toString());
                 }
                 if (mList.get(position).get("executeStatus") != null) {
                     ((MyViewHolder2) holder).mStates.setText(mList.get(position).get("executeStatus").toString());
@@ -380,18 +383,19 @@ public class GenerateSjRkListActivity extends BaseActivity implements IMvpView {
                         ((MyViewHolder2) holder).mStates.setBackgroundResource(R.mipmap.bg_green);
                     }
                 }
+//                if (mList.get(position).get("noShelfNum") != null) {
+//                    ((MyViewHolder2) holder).mPendingUpText.setText("待上架零散数：" + mList.get(position).get("noShelfNum").toString());
+//                }
                 if (mList.get(position).get("noShelfNum") != null) {
-                    ((MyViewHolder2) holder).mPendingUpText.setText("待上架零散数：" + mList.get(position).get("noShelfNum").toString());
+                    ((MyViewHolder2) holder).mNoUpText.setText("待上架总数：" + mList.get(position).get("noShelfNum").toString());
                 }
-                if (mList.get(position).get("noShelfPackageNum") != null) {
-                    ((MyViewHolder2) holder).mAllPendingUpText.setText("待上架整数：" + mList.get(position).get("noShelfPackageNum").toString());
-                }
+//                if (mList.get(position).get("noShelfPackageNum") != null) {
+//                    ((MyViewHolder2) holder).mAllPendingUpText.setText("待上架整数：" + mList.get(position).get("noShelfPackageNum").toString());
+//                }
                 if (mList.get(position).get("shelfAlreadyNum") != null) {
-                    ((MyViewHolder2) holder).mRackupText.setText("已上架零散数：" + mList.get(position).get("shelfAlreadyNum").toString());
+                    ((MyViewHolder2) holder).mAlareadyUpText.setText("已上架总数：" + mList.get(position).get("shelfAlreadyNum").toString());
                 }
-                if (mList.get(position).get("shelfAlreadyPackageNum") != null) {
-                    ((MyViewHolder2) holder).mAllRackpUpText.setText("已上架整数：" + mList.get(position).get("shelfAlreadyPackageNum").toString());
-                }
+
                 if (mList.get(position).get("buyerName") != null) {
                     ((MyViewHolder2) holder).mProductUserLayout.setVisibility(View.VISIBLE);
                     ((MyViewHolder2) holder).mProductUser.setText("货主：" + mList.get(position).get("buyerName").toString());
@@ -435,21 +439,19 @@ public class GenerateSjRkListActivity extends BaseActivity implements IMvpView {
         }
 
         class MyViewHolder2 extends RecyclerView.ViewHolder {
-            TextView orderName, mAllRackpUpText, mAllPendingUpText, mRackupText, mPendingUpText,mProductUser;
+            TextView orderName, mProductUser,mNoUpText,mAlareadyUpText;
             private Button mStates;
             LinearLayout mContentLayout,mProductUserLayout;
 
             public MyViewHolder2(View view) {
                 super(view);
+                mNoUpText = view.findViewById(R.id.no_up_text);
+                mAlareadyUpText = view.findViewById(R.id.already_up_text);
                 mProductUserLayout = view.findViewById(R.id.product_user_layout);
                 mProductUser = view.findViewById(R.id.product_user);
                 orderName = view.findViewById(R.id.order_name);
                 mContentLayout = view.findViewById(R.id.content_layout);
                 mStates = view.findViewById(R.id.item_state);
-                mAllRackpUpText = view.findViewById(R.id.already_packge_text);
-                mAllPendingUpText = view.findViewById(R.id.no_packge_text);
-                mRackupText = view.findViewById(R.id.already_num_text);
-                mPendingUpText = view.findViewById(R.id.no_num_text);
             }
         }
     }

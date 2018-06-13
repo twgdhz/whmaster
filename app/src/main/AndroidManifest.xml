@@ -46,6 +46,116 @@
 
         </activity>
         <activity
+            android:name="com.whmaster.tl.whmaster.activity.ChooseGoodsMoveActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.inventory.InventoryChoseActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.ChooseGoodsNumbersActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.inventory.ChoseInvertoryListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.inventory.ChoseInvertoryDetailListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.inventory.ChoseInvertoryDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickingListSearchActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.ReviewListSearchActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickingListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.ReviewListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickingGoodsDetailListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickingGoodsDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.ReviewGoodsDetailListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.ReviewGoodsDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.GenerateCkdActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.CkdLibraryActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.CkdDetailListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.TempPickingListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickDetailListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.GeneratePickActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
             android:name="com.whmaster.tl.whmaster.activity.StorageActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -202,6 +312,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
+
     </application>
+
 
 </manifest>

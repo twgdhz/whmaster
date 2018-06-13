@@ -1,7 +1,9 @@
 package com.whmaster.tl.whmaster.http;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.whmaster.tl.whmaster.common.Constants;
@@ -9,7 +11,9 @@ import com.whmaster.tl.whmaster.common.Constants;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -31,8 +35,9 @@ public class RetrofitHttp {
         okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
 //                .cookieJar(new CookieManager(context))
-                .addInterceptor(new ReceivedCookiesInterceptor(context))
-                .addInterceptor(new AddCookiesInterceptor(context))
+//                .addInterceptor(new ReceivedCookiesInterceptor(context))
+//                .addInterceptor(new AddCookiesInterceptor(context))
+                .addInterceptor(new TokenInterceptor(context))
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .build();
 //        okHttpClient = httpClient.cookieJar(new CookieManager(context)).build();
@@ -66,6 +71,17 @@ public class RetrofitHttp {
     }
     public void post(String url, Map<String,String> map, Subscriber<String> subscriber) {
         apiService.post(url, map)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    public void postJson(String url, Map<String,String> map, Subscriber<String> subscriber) {
+        String bodyJson = JSONObject.toJSONString(map);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), bodyJson);
+        Log.i("com.whmaster.tl.whmaster>>返回数据",body+"=====请求json数据======="+bodyJson+"="+url);
+        apiService.postJson(url, body)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

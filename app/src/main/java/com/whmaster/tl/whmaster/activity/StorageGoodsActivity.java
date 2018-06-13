@@ -174,6 +174,7 @@ public class StorageGoodsActivity extends BaseActivity implements IMvpView {
     }
 
     class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.MyViewHolder> {
+        int packageCount = 0;
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
@@ -187,33 +188,42 @@ public class StorageGoodsActivity extends BaseActivity implements IMvpView {
             if (mList.get(position).get("productName") != null) {
                 holder.name.setText("货品名称：" + mList.get(position).get("productName"));
             }
-            if (mList.get(position).get("noShelfNum") != null) {
-                holder.mNoNum.setText("待上架零散数：" + mList.get(position).get("noShelfNum").toString());
+            try {
+                packageCount = Integer.parseInt(mList.get(position).get("packageCount")+"");
+                if (mList.get(position).get("planNum") != null) {
+                    int planNum = Integer.parseInt(mList.get(position).get("planNum").toString()) % packageCount;
+                    holder.mNoNum.setText("计划上架零散数：" + planNum);
+                }
+                if (mList.get(position).get("actNum") != null) {
+                    int actNum = Integer.parseInt(mList.get(position).get("actNum").toString()) % packageCount;
+                    holder.mAlreadyNum.setText("已上架零散数：" + actNum);
+                }
+                if (mList.get(position).get("packageCount") != null) {
+                    int actZs = Integer.parseInt(mList.get(position).get("actNum").toString()) / packageCount;
+                    holder.mAlreadyPackgeNum.setText("已上架整数：" + actZs);
+                }
+                if (mList.get(position).get("planPackageNum") != null) {
+                    int planZs = Integer.parseInt(mList.get(position).get("planNum").toString()) / packageCount;
+                    holder.mNoPackgeNum.setText("计划上架整数：" + planZs);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            if (mList.get(position).get("noShelfPackageNum") != null) {
-                holder.mNoPackgeNum.setText("待上架整数：" + mList.get(position).get("noShelfPackageNum").toString());
-            }
-            if (mList.get(position).get("shelfAlreadyNum") != null) {
-                holder.mAlreadyNum.setText("已上架零散数：" + mList.get(position).get("shelfAlreadyNum").toString());
-            }
-            if (mList.get(position).get("shelfAlreadyPackageNum") != null) {
-                holder.mAlreadyPackgeNum.setText("已上架整数：" + mList.get(position).get("shelfAlreadyPackageNum").toString());
-            }
+
             if (mList.get(position).get("buyerName") != null) {
                 holder.mProductUserLayout.setVisibility(View.VISIBLE);
                 holder.mProductUser.setText("货主：" + mList.get(position).get("buyerName").toString());
             }else{
                 holder.mProductUserLayout.setVisibility(View.GONE);
             }
-            if (mList.get(position).get("stockInDetailStatusName") != null) {
-                holder.mStates.setText(mList.get(position).get("stockInDetailStatusName").toString());
                 if (mList.get(position).get("stockInDetailStatus").toString().equals("10")) {
                     holder.mStates.setBackgroundResource(R.mipmap.bg_red);
+                    holder.mStates.setText("未执行");
                     isExecute = false;
                 } else if (mList.get(position).get("stockInDetailStatus").toString().equals("20")) {
                     holder.mStates.setBackgroundResource(R.mipmap.bg_green);
+                    holder.mStates.setText("已执行");
                 }
-            }
             holder.imageView.setImageResource(R.mipmap.icon02);
             holder.mContentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

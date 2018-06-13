@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +14,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
-import com.whmaster.tl.whmaster.customview.MsgLoadingDialog;
-import com.whmaster.tl.whmaster.customview.PostDialog;
+import com.whmaster.tl.whmaster.widget.MsgLoadingDialog;
+import com.whmaster.tl.whmaster.widget.PostDialog;
 import com.whmaster.tl.whmaster.presenter.PickingPresenter;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
@@ -36,7 +35,7 @@ public class PickingGoodsActivity extends BaseActivity implements IMvpView {
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
     private Bundle mBundle;
-    private String mId;
+    private String mId,mSendType="";
     private ArrayList<ArrayMap<String, Object>> mList;
     private PickingPresenter pickingPresenter;
     private boolean isExecute = true;
@@ -65,6 +64,7 @@ public class PickingGoodsActivity extends BaseActivity implements IMvpView {
         pickingPresenter = new PickingPresenter(this, this);
         pickingPresenter.pickingGoodsList(mId);
         msgLoadingDialog = new MsgLoadingDialog(this);
+
     }
 
     @Override
@@ -72,26 +72,33 @@ public class PickingGoodsActivity extends BaseActivity implements IMvpView {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.sub_btn:
+                logcat("获取快点单号状态" + mSendType);
                 if (isExecute) {
-//                        msgLoadingDialog.builder().setMsg("正在执行").show();
-//                        pickingPresenter.executeStockOutTask(mId,mPostId);
-                    postDialog.setPositiveButton("确认", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mPostId = postDialog.getPost();
-                            logcat("输入快递单号" + mPostId);
-                            pickingPresenter.executeStockOutTask(mId, mPostId);
-                            mAlertDialog.dismiss();
-                        }
-                    }).setNegativeButton("取消", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mAlertDialog.dismiss();
-                        }
-                    }).show();
+                    if(mSendType.equals("30")){
+                        postDialog.setPositiveButton("确认", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mPostId = postDialog.getPost();
+                                logcat("输入快递单号" + mPostId);
+                                if(mPostId!=null && !mPostId.equals("")){
+                                    pickingPresenter.executeStockOutTask(mId, mPostId);
+                                    mAlertDialog.dismiss();
+                                }else{
+                                    Toast.makeText(PickingGoodsActivity.this,"快递单号不能为空！",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }).setNegativeButton("取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mAlertDialog.dismiss();
+                            }
+                        }).show();
+                    }else{
+                        pickingPresenter.executeStockOutTask(mId, mPostId);
+                    }
                 } else {
                     mAlertDialog.builder().setTitle("提示")
-                            .setMsg("你仍有未上架货品！")
+                            .setMsg("你仍有未拣货货品！")
                             .setPositiveButton("确认", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -112,6 +119,7 @@ public class PickingGoodsActivity extends BaseActivity implements IMvpView {
         mSubBtn.setOnClickListener(this);
         if (mBundle != null) {
             mId = mBundle.getString("stockInId");
+            mSendType = mBundle.getString("sendType");
         }
     }
 
@@ -135,7 +143,6 @@ public class PickingGoodsActivity extends BaseActivity implements IMvpView {
         super.setHeader();
         mTitle.setText("拣出货品");
         mSubBtn.setText("执行完毕");
-
     }
 
     @Override

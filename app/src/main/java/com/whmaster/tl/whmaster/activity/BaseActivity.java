@@ -14,9 +14,10 @@ import android.widget.TextView;
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.base.BaseInit;
 import com.whmaster.tl.whmaster.base.PublishActivityCallBack;
-import com.whmaster.tl.whmaster.customview.AlertDialog;
-import com.whmaster.tl.whmaster.customview.LoadingDialog;
-import com.whmaster.tl.whmaster.customview.MsgLoadingDialog;
+import com.whmaster.tl.whmaster.utils.AtyContainerUtils;
+import com.whmaster.tl.whmaster.widget.AlertDialog;
+import com.whmaster.tl.whmaster.widget.LoadingDialog;
+import com.whmaster.tl.whmaster.widget.MsgLoadingDialog;
 
 /**
  * Created by admin on 2017/10/23.
@@ -33,6 +34,7 @@ public abstract class BaseActivity extends Activity implements BaseInit,View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        AtyContainerUtils.getInstance().addActivity(this);
         setImmerseLayout(findViewById(R.id.head_id));
         initViews();
         setHeader();
@@ -112,6 +114,7 @@ public abstract class BaseActivity extends Activity implements BaseInit,View.OnC
 //			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             int statusBarHeight = getStatusBarHeight(this.getBaseContext());
             view.setPadding(0, statusBarHeight, 0, 0);
+            Log.i("com.whmaster.tl.whmaster>>","====222==="+statusBarHeight);
         }
     }
     /**

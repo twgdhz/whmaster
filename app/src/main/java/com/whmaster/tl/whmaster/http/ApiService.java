@@ -1,7 +1,11 @@
 package com.whmaster.tl.whmaster.http;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Map;
 
+import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -32,6 +36,9 @@ public interface ApiService {
     @POST()
     @FormUrlEncoded
     Observable<String> post(@Url String url, @FieldMap Map<String, String> maps);
+
+    @POST()
+    Observable<String> postJson(@Url String url, @Body RequestBody route);
 
     @HTTP(method = "DELETE",  hasBody = true)
     Observable<String> delete(@Url String url, @QueryMap Map<String, String> maps, @Header("partner") String partner, @Header("sign") String sign);

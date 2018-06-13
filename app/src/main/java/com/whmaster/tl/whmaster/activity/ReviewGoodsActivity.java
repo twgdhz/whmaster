@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
-import com.whmaster.tl.whmaster.customview.MsgLoadingDialog;
+import com.whmaster.tl.whmaster.widget.MsgLoadingDialog;
 import com.whmaster.tl.whmaster.presenter.PickingPresenter;
 import com.whmaster.tl.whmaster.view.IMvpView;
 

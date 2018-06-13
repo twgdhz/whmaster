@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="3.5"
+            android:layout_weight="4"
             android:scaleType="fitStart"
             android:src="@mipmap/icon01" />
 
@@ -28,14 +28,15 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:ellipsize="end"
+
             android:textColor="@color/back"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="18dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="3.5"
+            android:layout_weight="4"
             android:scaleType="fitEnd"
             android:src="@mipmap/right_gray" />
     </LinearLayout>
@@ -102,6 +103,7 @@
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:layout_marginTop="5dp"
+                android:text="待上架整数：0"
                 android:textSize="13sp" />
         </LinearLayout>
 

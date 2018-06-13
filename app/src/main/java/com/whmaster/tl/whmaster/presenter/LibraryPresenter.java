@@ -1,6 +1,7 @@
 package com.whmaster.tl.whmaster.presenter;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.whmaster.tl.whmaster.common.Constants;
@@ -8,6 +9,7 @@ import com.whmaster.tl.whmaster.http.RetrofitHttp;
 import com.whmaster.tl.whmaster.impl.LibraryInterface;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,88 +26,31 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
     }
 
     @Override
-    public void isPermission(String positionCode) {
+    public void getMovePosition(String positionCode,String positionPointCode) {
         Map map = new HashMap();
+        map.put("token",Constants.token);
         map.put("positionCode",positionCode);
-        RetrofitHttp.getInstance(mContext).post(Constants.isPermission, map, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                mImvpView.hideLoading();
-            }
-            @Override
-            public void onError(Throwable e) {
-                mImvpView.hideLoading();
-            }
-            @Override
-            public void onNext(String s) {
-                mTempMap = Constants.getJsonObject(s);
-                if(mTempMap!=null){
-                    if(mTempMap.get("resultCode")!=null && mTempMap.get("resultCode").toString().equals("0")){
-                        mImvpView.onSuccess("success",mTempMap);
-                    }else{
-                        mImvpView.onFail(mTempMap.get("resultMsg")+"");
-                    }
-                }
-                mImvpView.hideLoading();
-                Log.i("com.whmaster.tl.whmaster>>",s+"====onNext====");
-            }
-        });
-    }
-
-    @Override
-    public void queryWhStockInfoByCode(String positionCode) {
-        Map map = new HashMap();
-        map.put("positionCode",positionCode);
-        RetrofitHttp.getInstance(mContext).post(Constants.queryWhStockInfoByCode, map, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                mImvpView.hideLoading();
-            }
-            @Override
-            public void onError(Throwable e) {
-                mImvpView.hideLoading();
-                mImvpView.onFail(e+"");
-            }
-            @Override
-            public void onNext(String s) {
-                mTempMap = Constants.getJsonObject(s);
-                if(mTempMap!=null){
-                    if(mTempMap.get("resultCode")!=null && mTempMap.get("resultCode").toString().equals("0")){
-                        mImvpView.onSuccess("list",Constants.getJsonArray(mTempMap.get("result").toString()));
-                    }else{
-                        mImvpView.onFail(mTempMap.get("resultMsg")+"");
-                    }
-                }
-                mImvpView.hideLoading();
-                Log.i("com.whmaster.tl.whmaster>>",s+"====onNext====");
-            }
-        });
-    }
-
-    @Override
-    public void getListByPositionCode(String positionCode) {
-        Map map = new HashMap();
-        map.put("positionCode",positionCode);
+        map.put("positionPointCode",positionPointCode);
         mImvpView.showLoading();
-        RetrofitHttp.getInstance(mContext).post(Constants.getListByPositionCode, map, new Subscriber<String>() {
+        RetrofitHttp.getInstance(mContext).postJson(Constants.getMovePosition, map, new Subscriber<String>() {
             @Override
             public void onCompleted() {
                 mImvpView.hideLoading();
             }
             @Override
             public void onError(Throwable e) {
+                Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError失败=======");
                 mImvpView.hideLoading();
-                mImvpView.onFail(e+"");
             }
             @Override
             public void onNext(String s) {
-                mTempMap = Constants.getJsonObject(s);
-                if(mTempMap!=null){
-                    if(mTempMap.get("resultCode")!=null && mTempMap.get("resultCode").toString().equals("0")){
-                        mImvpView.onSuccess("list",Constants.getJsonArray(mTempMap.get("result").toString()));
-                    }else{
-                        mImvpView.onFail(mTempMap.get("resultMsg")+"");
-                    }
+                mDataMap = Constants.getJsonObjectByData(s);
+                if(mDataMap!=null && mDataMap.get("resultCode").equals("0000")){
+                    mTempMap = Constants.getJsonObject(s);
+                    mTempList = Constants.getJsonArray(mTempMap.get("value").toString());
+                    mImvpView.onSuccess("list",mTempList);
+                }else{
+                    mImvpView.onFail(mDataMap.get("resultMessage")+"");
                 }
                 mImvpView.hideLoading();
                 Log.i("com.whmaster.tl.whmaster>>",s+"====onNext====");
@@ -114,29 +59,30 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
     }
 
     @Override
-    public void checkIsSameWharehouseByCode(String oldCode, String newCode) {
+    public void getProductByPosition(String positionCode) {
         Map map = new HashMap();
-        map.put("oldPositionCode",oldCode);
-        map.put("newPositionCode",newCode);
+        map.put("token",Constants.token);
+        map.put("positionId",positionCode);
         mImvpView.showLoading();
-        RetrofitHttp.getInstance(mContext).post(Constants.checkIsSameWharehouseByCode, map, new Subscriber<String>() {
+        RetrofitHttp.getInstance(mContext).postJson(Constants.getProductByPosition, map, new Subscriber<String>() {
             @Override
             public void onCompleted() {
                 mImvpView.hideLoading();
             }
             @Override
             public void onError(Throwable e) {
+                Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError失败=======");
                 mImvpView.hideLoading();
             }
             @Override
             public void onNext(String s) {
-                mTempMap = Constants.getJsonObject(s);
-                if(mTempMap!=null){
-                    if(mTempMap.get("resultCode")!=null && mTempMap.get("resultCode").toString().equals("0")){
-                        mImvpView.onSuccess("isSameSuccess",mTempMap);
-                    }else{
-                        mImvpView.onFail(mTempMap.get("resultMsg")+"");
-                    }
+                mDataMap = Constants.getJsonObjectByData(s);
+                if(mDataMap!=null && mDataMap.get("resultCode").equals("0000")){
+                    mTempMap = Constants.getJsonObject(s);
+                    mTempList = Constants.getJsonArray(mTempMap.get("value").toString());
+                    mImvpView.onSuccess("list",mTempList);
+                }else{
+                    mImvpView.onFail(mDataMap.get("resultMessage")+"");
                 }
                 mImvpView.hideLoading();
                 Log.i("com.whmaster.tl.whmaster>>",s+"====onNext====");
@@ -145,28 +91,34 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
     }
 
     @Override
-    public void transferFinished(String entity) {
+    public void save(ArrayMap<String, Object> movePosition, ArrayList<ArrayMap<String, Object>> mList) {
         Map map = new HashMap();
-        map.put("entity",entity);
-        Log.i("com.whmaster.tl.whmaster>>",map+"====移库数据参数====");
-        RetrofitHttp.getInstance(mContext).post(Constants.transferFinished, map, new Subscriber<String>() {
+        map.put("token",Constants.token);
+        map.put("movePosition",movePosition);
+        map.put("detlList",mList);
+        mImvpView.showLoading();
+        RetrofitHttp.getInstance(mContext).postJson(Constants.save, map, new Subscriber<String>() {
             @Override
             public void onCompleted() {
+                mImvpView.hideLoading();
             }
             @Override
             public void onError(Throwable e) {
+                Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError失败=======");
+                mImvpView.hideLoading();
             }
             @Override
             public void onNext(String s) {
-                mTempMap = Constants.getJsonObject(s);
-                if(mTempMap!=null){
-                    if(mTempMap.get("resultCode")!=null && mTempMap.get("resultCode").toString().equals("0")){
-                        mImvpView.onSuccess("complete",mTempMap);
-                    }else{
-                        mImvpView.onFail(mTempMap.get("resultMsg")+"");
-                    }
+                mDataMap = Constants.getJsonObjectByData(s);
+                if(mDataMap!=null && mDataMap.get("resultCode").equals("0000")){
+//                    mTempMap = Constants.getJsonObject(s);
+//                    mTempList = Constants.getJsonArray(mTempMap.get("value").toString());
+                    mImvpView.onSuccess("saveSuccess",mTempList);
+                }else{
+                    mImvpView.onFail(mDataMap.get("resultMessage")+"");
                 }
-                Log.i("com.whmaster.tl.whmaster>>",s+"====移库成功====");
+                mImvpView.hideLoading();
+                Log.i("com.whmaster.tl.whmaster>>",s+"====onNext====");
             }
         });
     }

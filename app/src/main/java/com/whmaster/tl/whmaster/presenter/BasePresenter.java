@@ -13,8 +13,6 @@ import java.util.HashMap;
  */
 
 public abstract class BasePresenter{
-    protected HashMap<String, Object>  mHashMap;
-    protected ArrayList<HashMap<String, Object>> mHashList;
     protected ArrayMap<String, Object>  mTempMap,mTempMap2,mDataMap;
     protected ArrayList<ArrayMap<String, Object>> mTempList;
     protected Context mContext;

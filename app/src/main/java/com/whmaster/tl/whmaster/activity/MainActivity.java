@@ -9,36 +9,44 @@ import android.os.Handler;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
+import com.whmaster.tl.whmaster.activity.inventory.InventoryChoseActivity;
+import com.whmaster.tl.whmaster.model.MyDecoration;
 import com.whmaster.tl.whmaster.model.User;
 import com.whmaster.tl.whmaster.presenter.StoragePresenter;
 import com.whmaster.tl.whmaster.presenter.UserPresenter;
+import com.whmaster.tl.whmaster.utils.ScreenUtils;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
 public class MainActivity extends BaseActivity implements IMvpView{
 
-    private User mUser;
+//    private User mUser;
     private Bundle mBundle;
     private TextView mNameText;
     private Button mZxBtn;
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
-    private int[] mImageIds={R.mipmap.shsh_icon,R.mipmap.menu01,R.mipmap.menu02,R.mipmap.menu03,R.mipmap.menu05,R.mipmap.menu06,R.mipmap.menu07};
-    private String[] mNames={"实物收货","入库上架","拣货出库","拣货复核","取消条码","库位库存","库内移动"};
+    private int[] mImageIds={R.mipmap.ic_sh,R.mipmap.ic_rk,R.mipmap.ic_ck,R.mipmap.ic_fh,R.mipmap.ic_yd};
+    private String[] mNames={"实物收货","入库上架","拣货出库","装车复核","移库管理"};
     private UserPresenter userPresenter;
     private StoragePresenter storagePresenter;
     private String mStorageCount="0",mTaskCount="0",mFhCount="0",mShCount = "0";
     private MyBroadcastReceiver myBroadcastReceiver;
     public static String broadcastFlag = "main";
+    private LinearLayout mTitleLayout,mHeadLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +54,7 @@ public class MainActivity extends BaseActivity implements IMvpView{
         storagePresenter = new StoragePresenter(this,this);
         mBundle = getIntent().getExtras();
         if(mBundle!=null){
-            mUser = (User) mBundle.getSerializable("object");
+//            mUser = (User) mBundle.getSerializable("object");
             mNameText.setText("你好，"+mBundle.getString("username"));
         }
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
@@ -61,8 +69,8 @@ public class MainActivity extends BaseActivity implements IMvpView{
                     public void run() {
                         storagePresenter.queryUnfinishedMaterialCount();
                         storagePresenter.getStockConut();
-                        storagePresenter.getTaskCount("50");
-                        storagePresenter.getTaskCount("65");
+                        storagePresenter.getTaskCount();
+                        storagePresenter.getReviewCount();
                         mRecyclerView.refreshComplete();
                     }
                 }, 1000);
@@ -70,13 +78,14 @@ public class MainActivity extends BaseActivity implements IMvpView{
             @Override
             public void onLoadMore() {}
     });
-
         mAdapter = new RecyAdapter();
+
         mRecyclerView.setAdapter(mAdapter);
+
         storagePresenter.queryUnfinishedMaterialCount();
         storagePresenter.getStockConut();
-        storagePresenter.getTaskCount("50");
-        storagePresenter.getTaskCount("65");
+        storagePresenter.getTaskCount();
+        storagePresenter.getReviewCount();
 
         myBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
@@ -92,10 +101,15 @@ public class MainActivity extends BaseActivity implements IMvpView{
     @Override
     public void initViews() {
         super.initViews();
+        mHeadLayout = findViewById(R.id.main_head_layout);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mHeadLayout.getLayoutParams();
+        params.height = (int) (ScreenUtils.getScreenWidth(this)*0.5);
+        mHeadLayout.setLayoutParams(params);
         mNameText = findViewById(R.id.user_name_text);
         mZxBtn = findViewById(R.id.zx_btn);
         mRecyclerView = findViewById(R.id.main_recyview);
-
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mZxBtn.setOnClickListener(this);
     }
     @Override
@@ -116,8 +130,8 @@ public class MainActivity extends BaseActivity implements IMvpView{
             case 0:
                 storagePresenter.queryUnfinishedMaterialCount();
                 storagePresenter.getStockConut();
-                storagePresenter.getTaskCount("50");
-                storagePresenter.getTaskCount("65");
+                storagePresenter.getTaskCount();
+                storagePresenter.getReviewCount();
                 break;
         }
     }
@@ -143,6 +157,7 @@ public class MainActivity extends BaseActivity implements IMvpView{
     public void onFail(String errorMsg) {
     }
 
+
     @Override
     public void onSuccess(String type, Object object) {
         ArrayMap map = (ArrayMap) object;
@@ -155,24 +170,22 @@ public class MainActivity extends BaseActivity implements IMvpView{
                 break;
             //入库单数
             case "getStorageCount":
-                mStorageCount = map.get("result").toString();
-//                storagePresenter.getTaskCount("50");
+                mStorageCount = map.get("value").toString();
                 mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
                 break;
             //拣货单数
             case "getTaskCount":
-                mTaskCount = map.get("result").toString();
-//                storagePresenter.getTaskCount("65");
+                mTaskCount = map.get("value").toString();
                 mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
                 break;
             //拣货复核
             case "getFhCount":
-                mFhCount = map.get("result").toString();
+                mFhCount = map.get("value").toString();
                 mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
                 break;
             //实物收货
             case "queryUnfinishedMaterialCount":
-                mShCount = map.get("result").toString();
+                mShCount = map.get("value").toString();
                 mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
                 break;
         }
@@ -204,8 +217,8 @@ public class MainActivity extends BaseActivity implements IMvpView{
             logcat("接收广播==============");
             storagePresenter.queryUnfinishedMaterialCount();
             storagePresenter.getStockConut();
-            storagePresenter.getTaskCount("50");
-            storagePresenter.getTaskCount("65");
+            storagePresenter.getTaskCount();
+            storagePresenter.getReviewCount();
         }
     }
 
@@ -227,8 +240,19 @@ public class MainActivity extends BaseActivity implements IMvpView{
         }
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
+            if(position%2==1){
+                holder.mVerView.setVisibility(View.GONE);
+            }else{
+                holder.mVerView.setVisibility(View.VISIBLE);
+            }
+            if (position>3){
+                holder.mHorView.setVisibility(View.GONE);
+            }else{
+                holder.mHorView.setVisibility(View.VISIBLE);
+            }
            holder.imageView.setImageResource(mImageIds[position]);
             holder.textView.setText(mNames[position]);
+
             switch (position){
                 case 0:
                     if(!shshCount.equals("") && !shshCount.equals("0")){
@@ -278,52 +302,65 @@ public class MainActivity extends BaseActivity implements IMvpView{
                         case 1:
                             startActivity(GenerateSjRkListActivity.class,null);
                             break;
+//                        //生成出库单
+//                        case 2:
+//                            startActivity(GenerateCkdActivity.class,null);
+//                            break;
+//                        //生成拣货单
+//                        case 3:
+//                            startActivity(GeneratePickActivity.class,null);
+//                            break;
                         //拣出货品
                         case 2:
-                            Bundle bundle = new Bundle();
-                            bundle.putString("type","50");
-                            startActivity(PickingActivity.class,bundle);
+//                            startActivity(PickingActivity.class,bundle);
+                            startActivity(PickingListActivity.class,null);
                             break;
                         //拣货复核
                         case 3:
-                            bundle = new Bundle();
-                            bundle.putString("type","65");
-                            startActivity(PickingActivity.class,bundle);
+//                            startActivity(PickingActivity.class,bundle);
+                            startActivity(ReviewListActivity.class,null);
                             break;
                         //装车确认
 //                        case 3:
 //                            startActivity(LoadingConfirmActivity.class,null);
 //                            break;
                         //取消条码
-                        case 4:
-                            startActivity(CancelBarCodeActivity.class,null);
-                            break;
+//                        case 4:
+//                            startActivity(CancelBarCodeActivity.class,null);
+//                            break;
                         //库位库存
-                        case 5:
-                            startActivity(ScanLibraryActivity.class,null);
-                            break;
+//                        case 4:
+//                            startActivity(ScanLibraryActivity.class,null);
+//                            break;
                         //库内移动
-                        case 6:
+                        case 4:
                             startActivity(ChooseLibraryActivity.class,null);
                             break;
+                        //盘点
+//                        case 5:
+//                            startActivity(InventoryChoseActivity.class,null);
+//                            break;
                     }
                 }
             });
         }
         @Override
         public int getItemCount() {
-            return 7;
+            return 5;
         }
         class MyViewHolder extends RecyclerView.ViewHolder {
             FrameLayout mContentLayout;
             private ImageView imageView;
             private TextView textView,mConuntText;
+            private View mHorView,mVerView;
             public MyViewHolder(View view) {
                 super(view);
                 textView = view.findViewById(R.id.item_name);
                 imageView = view.findViewById(R.id.item_image);
                 mContentLayout = view.findViewById(R.id.item_layout);
                 mConuntText = view.findViewById(R.id.conunt_text);
+                mHorView = view.findViewById(R.id.horizontal_line_view);
+                mVerView = view.findViewById(R.id.vertical_line_view);
             }
         }
     }

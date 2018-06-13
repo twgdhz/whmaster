@@ -56,8 +56,18 @@ public class ChooseNewLibraryActivity extends BaseActivity implements IMvpView{
         switch (v.getId()){
             case R.id.sub_btn:
                 mNewCode = mNewCodeEdit.getText().toString();
+
                 if(!mNewCode.equals("")){
-                    libraryPresenter.checkIsSameWharehouseByCode(mOldPositionCode,mNewCode);
+                    if(!mNewCode.equals(mOldPositionCode)){
+                        mEntityMap = new ArrayMap<>();
+                        mEntityMap.put("list",mList);
+                        mEntityMap.put("oldPositionCode",mOldPositionCode);
+                        mEntityMap.put("newPositionCode",mNewCode);
+                        mEntityMap.put("memo",mRemarks.getText().toString());
+//                        libraryPresenter.checkIsSameWharehouseByCode(mOldPositionCode,mNewCode);
+                    }else{
+                        Toast.makeText(this,"新库位码不能和旧库位码相同",Toast.LENGTH_SHORT).show();
+                    }
                 }else{
                     Toast.makeText(this,"请扫描库位码或输入库位编码",Toast.LENGTH_SHORT).show();
                 }
@@ -116,7 +126,6 @@ public class ChooseNewLibraryActivity extends BaseActivity implements IMvpView{
                 mEntityMap.put("oldPositionCode",mOldPositionCode);
                 mEntityMap.put("newPositionCode",mNewCode);
                 mEntityMap.put("memo",mRemarks.getText().toString());
-                libraryPresenter.transferFinished(JSON.toJSONString(mEntityMap));
                 break;
             case "complete":
                 Toast.makeText(ChooseNewLibraryActivity.this,"移库成功",Toast.LENGTH_SHORT).show();

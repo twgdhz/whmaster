@@ -203,17 +203,20 @@ public class GoodsRikActivity extends BaseActivity implements IMvpView{
             if(mList.get(position).get("productName")!=null){
                 holder.mProductName.setText("货品名称："+mList.get(position).get("productName")+"");
             }
-            if(mList.get(position).get("planPackageNum")!=null && !mList.get(position).get("planPackageNum").toString().equals("")){
-                int planPack = Integer.parseInt(mList.get(position).get("planPackageNum").toString());
-                if(mList.get(position).get("planNum")!=null && !mList.get(position).get("planNum").toString().equals("")){
-                    if(Integer.parseInt(mList.get(position).get("planNum").toString())>0){
-                        planPack++;
-                        holder.mProductNum.setText("货品数量："+planPack+"");
-                    }else{
-                        holder.mProductNum.setText("货品数量："+planPack+"");
-                    }
-                }
+            if(mList.get(position).get("planNum")!=null){
+                holder.mProductNum.setText("货品数量："+mList.get(position).get("planNum"));
             }
+//            if(mList.get(position).get("planPackageNum")!=null && !mList.get(position).get("planPackageNum").toString().equals("")){
+//                int planPack = Integer.parseInt(mList.get(position).get("planPackageNum").toString());
+//                if(mList.get(position).get("planNum")!=null && !mList.get(position).get("planNum").toString().equals("")){
+//                    if(Integer.parseInt(mList.get(position).get("planNum").toString())>0){
+//                        planPack++;
+//                        holder.mProductNum.setText("货品数量："+planPack+"");
+//                    }else{
+//                        holder.mProductNum.setText("货品数量："+planPack+"");
+//                    }
+//                }
+//            }
         }
         public void notifiList(ArrayList<ArrayMap<String, Object>> list) {
             mList.addAll(list);

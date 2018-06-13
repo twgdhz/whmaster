@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.whmaster.tl.whmaster.customview.SlidingButtonView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.whmaster.tl.whmaster.widget.SlidingButtonView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content_layout"
     android:layout_width="match_parent"
     android:layout_height="135dp"
@@ -145,5 +145,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-</com.whmaster.tl.whmaster.customview.SlidingButtonView>
+</com.whmaster.tl.whmaster.widget.SlidingButtonView>
 

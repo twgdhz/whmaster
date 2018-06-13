@@ -16,7 +16,6 @@ public class RecyclerUtil {
     private RecyclerUtil(Context context){
 
     }
-    //获取单例
     public static void init(XRecyclerView mRecyclerView,Context context) {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.SysProgress);

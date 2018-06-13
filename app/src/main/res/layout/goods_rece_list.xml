@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="4"
+            android:layout_weight="4.5"
             android:scaleType="fitStart"
             android:src="@mipmap/icon01" />
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="18dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="4"
+            android:layout_weight="4.5"
             android:scaleType="fitEnd"
             android:src="@mipmap/right_btn" />
     </LinearLayout>

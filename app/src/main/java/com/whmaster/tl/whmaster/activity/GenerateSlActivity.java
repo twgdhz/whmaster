@@ -2,6 +2,7 @@ package com.whmaster.tl.whmaster.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class GenerateSlActivity extends BaseActivity implements IMvpView {
     private String mPosition = "0", mWharehouseId, regionId, positionId;
     private Bundle mBundle;
     private StoragePresenter storagePresenter;
-    private ArrayList<HashMap<String, Object>> mKuquList, mKuweiList;
+    private ArrayList<ArrayMap<String, Object>> mKuquList, mKuweiList;
     private TimePickerView mTimePickerView;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ArrayList<String> mKuquNameList, mKuweiNameList;
@@ -251,10 +252,10 @@ public class GenerateSlActivity extends BaseActivity implements IMvpView {
 //                }
                 break;
             case "getRegion":
-                mKuquList = (ArrayList<HashMap<String, Object>>) object;
+                mKuquList = (ArrayList<ArrayMap<String, Object>>) object;
                 mKuquNameList = new ArrayList<>();
                 for (int i = 0; i < mKuquList.size(); i++) {
-                    mKuquNameList.add(mKuquList.get(i).get("regionPosCode") + "");
+                    mKuquNameList.add(mKuquList.get(i).get("regionName") + "");
                 }
                 if(isHaveId){
                     mWarehouseQu.setText(mKuquNameList.get(0));
@@ -263,10 +264,10 @@ public class GenerateSlActivity extends BaseActivity implements IMvpView {
                 }
                 break;
             case "getPosition":
-                mKuweiList = (ArrayList<HashMap<String, Object>>) object;
+                mKuweiList = (ArrayList<ArrayMap<String, Object>>) object;
                 mKuweiNameList = new ArrayList<>();
                 for (int i = 0; i < mKuweiList.size(); i++) {
-                    mKuweiNameList.add(mKuweiList.get(i).get("positionCode") + "");
+                    mKuweiNameList.add(mKuweiList.get(i).get("positionName") + "");
                 }
                 if(isHaveId){
                     mWarehouseWei.setText(mKuweiNameList.get(0));

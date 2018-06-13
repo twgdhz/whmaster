@@ -119,13 +119,6 @@
         android:paddingLeft="30dp"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/packges"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="13sp"
-            android:text="库存整数："/>
-        <TextView
             android:id="@+id/nums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

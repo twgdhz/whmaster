@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,10 +22,13 @@ import android.widget.TextView;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.presenter.LibraryPresenter;
+import com.whmaster.tl.whmaster.utils.DensityUtils;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by admin on 2017/11/14.
@@ -35,12 +41,14 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
     private RecyAdapter mAdapter;
     private Button mNextBtn;
     private Bundle mBundle;
-    private String moldPositionCode;
+    private String mPositionCode,mCode;
     private LibraryPresenter libraryPresenter;
     private ArrayList<ArrayMap<String,Object>> mList;
     private TextView mOldText;
     private boolean isNext = false;
-    private LinearLayout mEmptyLayout;
+    private LinearLayout mEmptyLayout,mTitleLayout;
+    private ArrayList<ArrayMap<String,Object>> mDataList;
+
     @Override
     protected int getLayoutId() {
         return R.layout.chose_goods_list_layout;
@@ -52,15 +60,17 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
         libraryPresenter = new LibraryPresenter(this,this);
         mBundle = getIntent().getExtras();
         if(mBundle!=null){
-            moldPositionCode = mBundle.getString("code");
-            libraryPresenter.getListByPositionCode(moldPositionCode);
-            mOldText.setText("原库位编码："+moldPositionCode);
+            mPositionCode = mBundle.getString("positionCode");
+            mCode = mBundle.getString("code");
+//            libraryPresenter.getListByPositionCode(moldPositionCode);
+            mOldText.setText("库位码："+mPositionCode);
         }
-
         RecyclerUtil.init(xRecyclerView,this);
         xRecyclerView.setLoadingMoreEnabled(false);
         xRecyclerView.setPullRefreshEnabled(false);
-
+        libraryPresenter.getProductByPosition(mCode);
+//        libraryPresenter.getProductByPosition(mPositionCode);
+        mDataList = new ArrayList<>();
     }
 
     @Override
@@ -68,28 +78,11 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
         super.onClick(v);
         switch (v.getId()){
             case R.id.sub_btn:
-                if(mList!=null && mList.size()>0){
-                    for(int i=0;i<mList.size();i++){
-                        if(mList.get(i).get("transferNum")!=null && mList.get(i).get("transferPackageNum")!=null){
-                            if(Integer.parseInt(mList.get(i).get("transferNum").toString())>0 || Integer.parseInt(mList.get(i).get("transferPackageNum").toString())>0){
-                                isNext = true;
-                            }
-                        }
-                    }
-                    if(isNext){
-                        Bundle bundle = new Bundle();
-                        bundle.putString("code",moldPositionCode);
-                        bundle.putSerializable("list",mList);
-                        openActivityForResult(ChooseNewLibraryActivity.class,0,bundle);
-                    }else{
-                        mAlertDialog.builder().setTitle("提示")
-                                .setMsg("移库数量不能位0！")
-                                .setPositiveButton("确认", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                    }
-                                }).show();
-                    }
+                if(mDataList!=null && mDataList.size()>0){
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("list",mDataList);
+                    bundle.putString("code",mCode);
+                    startActivity(ChooseGoodsNumbersActivity.class,bundle);
                 }
                 break;
         }
@@ -98,6 +91,7 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
     @Override
     public void initViews() {
         super.initViews();
+        mTitleLayout = findViewById(R.id.title);
         mNextBtn = findViewById(R.id.sub_btn);
         mNextBtn.setOnClickListener(this);
         xRecyclerView = findViewById(R.id.choose_goods_recy_view);
@@ -110,7 +104,6 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
         switch (requestCode){
             case 0:
                 isNext = false;
-                libraryPresenter.getListByPositionCode(moldPositionCode);
                 break;
         }
     }
@@ -132,7 +125,7 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
     @Override
     public void setHeader() {
         super.setHeader();
-        mTitle.setText("选择货品");
+        mTitleLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -188,175 +181,65 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
-            mList.get(position).put("transferNum","0");
-            mList.get(position).put("transferPackageNum","0");
             if(mList.get(position).get("productName")!=null){
-                holder.productName.setText("货品名称："+mList.get(position).get("productName").toString());
+                holder.productName.setText(mList.get(position).get("productName").toString());
             }
-            if(mList.get(position).get("productSku")!=null){
-                holder.productSku.setText("货品SKU码："+mList.get(position).get("productSku").toString());
-            }
-            if(mList.get(position).get("consignorName")!=null){
-                holder.userName.setText("货主："+mList.get(position).get("consignorName").toString());
+            if(mList.get(position).get("productSkuCode")!=null){
+                holder.productSku.setText(mList.get(position).get("productSkuCode").toString());
             }
             if(mList.get(position).get("batchNo")!=null){
-                holder.numbers.setText("批次号："+mList.get(position).get("batchNo").toString());
+                holder.productNo.setText(mList.get(position).get("batchNo").toString());
             }
-            if(mList.get(position).get("availablePackageNum")!=null){
-                holder.Planpackages.setText("可移整数："+mList.get(position).get("availablePackageNum")+"");
+            if(mList.get(position).get("inventoryNum")!=null){
+                holder.sumNumbers.setText(mList.get(position).get("inventoryNum").toString()+mList.get(position).get("baseUnitCn").toString());
             }
-            if(mList.get(position).get("availableNum")!=null){
-                holder.PlanNums.setText("可移零散数："+mList.get(position).get("availableNum").toString());
+            if(mList.get(position).get("packageSpec")!=null){
+                holder.productGuige.setText(mList.get(position).get("packageSpec").toString());
             }
-            holder.mActualPackages.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if(mList.get(position).get("packageCount")!=null){
+                int packCount =  Integer.parseInt(mList.get(position).get("packageCount").toString());
+                int moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packCount;
+                int moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packCount;
+                if(moveZs>0){
+                    holder.productNumbers.setText(moveZs+mList.get(position).get("packageUnitCn").toString() + "/" + moveNum+mList.get(position).get("baseUnitCn").toString());
+                }else{
+                    holder.productNumbers.setText(moveNum+mList.get(position).get("baseUnitCn").toString());
                 }
+            }
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    int max = Integer.parseInt(mList.get(position).get("availablePackageNum").toString());
-                    if(s!=null && !s.toString().equals("")){
-                        int a = Integer.parseInt(s.toString());
-                        if(a<0){
-                            mAlertDialog.builder().setTitle("提示").setMsg("数量不能小于0")
-                                    .setPositiveButton("确认", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {}}).show();
-                            holder.mActualPackages.setText("0");
-                            a = 0;
-                        }else if(a>max){
-                            mAlertDialog.builder().setTitle("提示").setMsg("数量不能大于"+max)
-                                    .setPositiveButton("确认", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {}}).show();
-                            holder.mActualPackages.setText(max+"");
-                            a = max;
-                        }
-                        mList.get(position).put("transferPackageNum",a+"");
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        mDataList.add(mList.get(position));
                     }else{
-                        holder.mActualPackages.setText("0");
-                        mList.get(position).put("transferPackageNum","0");
+                        mDataList.remove(mList.get(position));
                     }
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
+                    logcat(mDataList+"=====");
                 }
             });
-            holder.mActualNums.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    int max = Integer.parseInt(mList.get(position).get("availableNum").toString());
-                    if(s!=null && !s.toString().equals("")){
-                        int a = Integer.parseInt(s.toString());
-                        if(a<0){
-                            mAlertDialog.builder().setTitle("提示").setMsg("数量不能小于0")
-                                    .setPositiveButton("确认", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {}}).show();
-                            holder.mActualNums.setText("0");
-                            a = 0;
-                        }else if(a>max){
-                            mAlertDialog.builder().setTitle("提示").setMsg("数量不能大于"+max)
-                                    .setPositiveButton("确认", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {}}).show();
-                            holder.mActualNums.setText(max+"");
-                            a = max;
-                        }
-                        mList.get(position).put("transferNum",a+"");
-                    }else{
-                        holder.mActualNums.setText("0");
-                        mList.get(position).put("transferNum","0");
-                    }
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-            holder.mLeftReduceImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int m = Integer.parseInt(holder.mActualPackages.getText().toString());
-                    if(m>0){
-                        m--;
-                        holder.mActualPackages.setText(m+"");
-                    }
-                    mList.get(position).put("transferPackageNum",m+"");
-                }
-            });
-            holder.mLeftAddImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int m = Integer.parseInt(holder.mActualPackages.getText().toString());
-                    int max = Integer.parseInt(mList.get(position).get("availablePackageNum").toString());
-                    if(m<max){
-                        m++;
-                        holder.mActualPackages.setText(m+"");
-                    }else{
-                        mAlertDialog.builder().setTitle("提示").setMsg("数量不能大于"+max)
-                                .setPositiveButton("确认", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {}}).show();
-                    }
-                    mList.get(position).put("transferPackageNum",m+"");
-                }
-            });
-            holder.mRightReduceImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int m = Integer.parseInt(holder.mActualNums.getText().toString());
-                    if(m>0){
-                        m--;holder.mActualNums.setText(m+"");
-                    }
-                    mList.get(position).put("transferNum",m+"");
-                }
-            });
-            holder.mRightAddImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int m = Integer.parseInt(holder.mActualNums.getText().toString());
-                    int max = Integer.parseInt(mList.get(position).get("availableNum").toString());
-                    if(m<max){
-                        m++;
-                        holder.mActualNums.setText(m+"");
-                    }else{
-                        mAlertDialog.builder().setTitle("提示").setMsg("数量不能大于"+max)
-                                .setPositiveButton("确认", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {}}).show();
-                    }
-                    mList.get(position).put("transferNum",m+"");
-                }
-            });
-
         }
-
         @Override
         public int getItemCount() {
             return mList.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView productName, productSku, userName, numbers, Planpackages,PlanNums;
-            EditText mActualPackages,mActualNums;
-            ImageView mLeftReduceImage,mLeftAddImage,mRightReduceImage,mRightAddImage;
+            TextView productName, productSku,productNo,productNumbers,productGuige,sumNumbers;
+            LinearLayout mContentLayout;
+            CheckBox checkBox;
             public MyViewHolder(View view) {
                 super(view);
+                checkBox = view.findViewById(R.id.check_box);
+                mContentLayout = view.findViewById(R.id.content_layout);
+//                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) mContentLayout.getLayoutParams();
+//                params.height = DensityUtils.dp2px(ChooseLibraryGoodsActivity.this,250);
+//                mContentLayout.setLayoutParams(params);
                 productName = view.findViewById(R.id.product_name);
-                productSku = view.findViewById(R.id.product_sku);
-                userName = view.findViewById(R.id.user_name);
-                numbers = view.findViewById(R.id.product_numbers);
-                Planpackages = view.findViewById(R.id.jhsj_dw_text2);
-                PlanNums = view.findViewById(R.id.jhsj_g_text2);
-                mActualPackages = view.findViewById(R.id.left_text);
-                mActualNums = view.findViewById(R.id.right_text);
-                mLeftReduceImage = view.findViewById(R.id.left_reduce_image);
-                mLeftAddImage = view.findViewById(R.id.left_add_image);
-                mRightReduceImage = view.findViewById(R.id.right_reduce_image);
-                mRightAddImage = view.findViewById(R.id.right_add_image);
+                productSku = view.findViewById(R.id.product_sku_value);
+                productNo = view.findViewById(R.id.product_no_value);
+                productNumbers = view.findViewById(R.id.product_ke_move_value);
+                productGuige = view.findViewById(R.id.product_guige_value);
+                sumNumbers = view.findViewById(R.id.product_he_ji_value);
             }
         }
     }

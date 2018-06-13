@@ -55,7 +55,6 @@ public class ScanLibraryListsActivity extends BaseActivity implements IMvpView{
         mBundle = getIntent().getExtras();
         if(mBundle!=null){
             mCode = mBundle.getString("code");
-            libraryPresenter.queryWhStockInfoByCode(mCode);
             mLibraryText.setText("库位编码："+mCode);
         }
         RecyclerUtil.init(mRecyclerView,this);
@@ -121,15 +120,13 @@ public class ScanLibraryListsActivity extends BaseActivity implements IMvpView{
         }
 
     }
-
     @Override
     public void showLoading() {
-
+        loadingDialog.builder().show();
     }
-
     @Override
     public void hideLoading() {
-
+        loadingDialog.dismiss();
     }
 
     class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.MyViewHolder> {
@@ -154,11 +151,11 @@ public class ScanLibraryListsActivity extends BaseActivity implements IMvpView{
             if(mList.get(position).get("consignorName")!=null){
                 holder.userName.setText("货主名称："+mList.get(position).get("consignorName").toString());
             }
-            if(mList.get(position).get("inventoryPackageNum")!=null){
-                holder.packges.setText("库存整数："+mList.get(position).get("inventoryPackageNum").toString());
-            }
+//            if(mList.get(position).get("inventoryPackageNum")!=null){
+//                holder.packges.setText("库存整数："+mList.get(position).get("inventoryPackageNum").toString());
+//            }
             if(mList.get(position).get("inventoryNum")!=null){
-                holder.nums.setText("库存零散数："+mList.get(position).get("inventoryNum").toString());
+                holder.nums.setText("库存数量："+mList.get(position).get("inventoryNum").toString());
             }
         }
 
@@ -168,14 +165,13 @@ public class ScanLibraryListsActivity extends BaseActivity implements IMvpView{
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView productName, productSku, productNumber, userName, packges,nums;
+            TextView productName, productSku, productNumber, userName, nums;
             public MyViewHolder(View view) {
                 super(view);
                 productName = view.findViewById(R.id.product_name);
                 productSku = view.findViewById(R.id.product_sku);
                 productNumber = view.findViewById(R.id.product_number);
                 userName = view.findViewById(R.id.user_name);
-                packges = view.findViewById(R.id.packges);
                 nums = view.findViewById(R.id.nums);
             }
         }
@@ -205,13 +201,12 @@ public class ScanLibraryListsActivity extends BaseActivity implements IMvpView{
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context arg0, Intent arg1) {
+            logcat("获取获取扫描条形码" + arg1);
             if (arg1.getAction().equals(m_Broadcastname)) {
                 String str = arg1.getStringExtra("BARCODE");
                 if (!"".equals(str)) {
                     mCode = str;
                     mLibraryText.setText("库位编码："+mCode);
-                    libraryPresenter.queryWhStockInfoByCode(mCode);
-
                     logcat("获取获取扫描条形码" + str);
 
                 }else{

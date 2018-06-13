@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.view.IMvpView;
@@ -25,7 +26,7 @@ public class SplitSjdActivity extends BaseActivity implements IMvpView{
     private ImageView mLeftReduceImage,mLeftAddImage,mRightReduceImage,mRightAddImage;
     private EditText mPlanZs,mPlanNum;
     private TextView mProductName,mProductSku;
-    private int left = 0,right = 0,mSplitLeft = 0,mSplitRight = 0,mMaxLeft=0,mMaxRight=0;
+    private int left = 0,right = 0,mSplitLeft = 0,mSplitRight = 0,mMaxLeft=0,mMaxRight=0,mMaxNum = 0,mPackageCount =0;
     private Button mSubBtn;
     private HashMap<String,Object> mSplitMap;
     private String mPosition = "0";
@@ -43,6 +44,11 @@ public class SplitSjdActivity extends BaseActivity implements IMvpView{
             mProductSku.setText("SKU："+mSplitMap.get("productSku"));
             mPlanZs.setText(mSplitMap.get("planPackageNum")+"");
             mPlanNum.setText(mSplitMap.get("planNum")+"");
+            if(mSplitMap.get("planPackageNum")!=null && mSplitMap.get("packageCount")!=null && mSplitMap.get("planNum")!=null){
+//                mMaxLeft = Integer.parseInt(mSplitMap.get("planPackageNum").toString());
+                mPackageCount = Integer.parseInt(mSplitMap.get("packageCount").toString());
+                mMaxNum = Integer.parseInt(mSplitMap.get("planPackageNum").toString())*Integer.parseInt(mSplitMap.get("packageCount").toString())+Integer.parseInt(mSplitMap.get("planNum").toString());
+            }
             if(mSplitMap.get("planPackageNum")!=null && !mSplitMap.get("planPackageNum").toString().equals("")){
                 mMaxLeft = Integer.parseInt(mSplitMap.get("planPackageNum").toString());
             }
@@ -85,12 +91,12 @@ public class SplitSjdActivity extends BaseActivity implements IMvpView{
                     int a = Integer.parseInt(s.toString());
                     if(a<0){
                         mPlanNum.setText("0");
-                    }else if(a>mMaxRight){
-                        mAlertDialog.builder().setTitle("提示").setMsg("数量不能大于"+mMaxRight)
+                    }else if(a>mMaxNum){
+                        mAlertDialog.builder().setTitle("提示").setMsg("数量不能大于"+mMaxNum)
                                 .setPositiveButton("确认", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {}}).show();
-                        mPlanNum.setText(mMaxRight+"");
+                        mPlanNum.setText(mMaxNum+"");
                     }
                 }else{
                     mPlanNum.setText("0");
@@ -109,6 +115,7 @@ public class SplitSjdActivity extends BaseActivity implements IMvpView{
         mBundle = getIntent().getExtras();
         if(mBundle!=null){
             mSplitMap = (HashMap<String, Object>) mBundle.getSerializable("map");
+            logcat("获取传递的map对象"+mSplitMap);
             mPosition = mBundle.getString("position");
         }
         mProductName = findViewById(R.id.product_name);
@@ -160,7 +167,7 @@ public class SplitSjdActivity extends BaseActivity implements IMvpView{
                 }
                 break;
             case   R.id.right_add_image:
-                if(right < mMaxRight){
+                if(right < mMaxNum){
                     right++;
                     mPlanNum.setText(right+"");
                 }
@@ -172,22 +179,28 @@ public class SplitSjdActivity extends BaseActivity implements IMvpView{
                     mSplitLeft = mMaxLeft - left;
                     mSplitRight = mMaxRight - right;
                     logcat(mSplitLeft+"获取拆分数量"+mSplitRight);
-                    if((mSplitLeft > 0 || mSplitRight > 0) && (left > 0 || right > 0)){
-                        mSplitMap.put("planPackageNum",mSplitLeft+"");
-                        mSplitMap.put("planNum",mSplitRight+"");
-                        mSplitMap.put("isSplit","true");
-                        bundle.putSerializable("splitMap", mSplitMap);
-                        bundle.putString("planPackageNum",left+"");
-                        bundle.putString("planNum",right+"");
-                        bundle.putString("position",mPosition);
-                        bundle.putString("isSplit","true");
+                    int sum = left * mPackageCount + right;
+                    logcat(sum+"=====41==="+mMaxNum);
+                    if(sum<=mMaxNum){
+                        if((mSplitLeft > 0 || mSplitRight > 0) && (left > 0 || right > 0)){
+                            mSplitMap.put("planPackageNum",mSplitLeft+"");
+                            mSplitMap.put("planNum",mSplitRight+"");
+                            mSplitMap.put("isSplit","true");
+                            bundle.putSerializable("splitMap", mSplitMap);
+                            bundle.putString("planPackageNum",left+"");
+                            bundle.putString("planNum",right+"");
+                            bundle.putString("position",mPosition);
+                            bundle.putString("isSplit","true");
+                        }else{
+                            bundle.putString("isSplit","false");
+                        }
+                        setResultOk(bundle);
                     }else{
-                        bundle.putString("isSplit","false");
+                        Toast.makeText(this,"拆分数量不能大于总数量"+mMaxNum+"！",Toast.LENGTH_SHORT).show();
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                setResultOk(bundle);
                 break;
         }
     }
