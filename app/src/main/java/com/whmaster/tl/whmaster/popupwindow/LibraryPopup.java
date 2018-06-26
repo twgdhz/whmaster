@@ -18,6 +18,7 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.presenter.LibraryPresenter;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
+import com.whmaster.tl.whmaster.utils.ScreenUtils;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
 import java.util.ArrayList;
@@ -36,12 +37,12 @@ public class LibraryPopup extends PopupWindow{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mView = inflater.inflate(R.layout.library_popup, null);
-        mContentLayout = mView.findViewById(R.id.content_layout);
+        mContentLayout = mView.findViewById(R.id.content_id);
 
-//        LayoutParams params = mContentLayout.getLayoutParams();
-//        params.height = ScreenUtils.getScreenWidth(mContext)/3;
-//        params.width = ScreenUtils.getScreenWidth(mContext)/3;
-//        mContentLayout.setLayoutParams(params);
+        LayoutParams params = mContentLayout.getLayoutParams();
+        params.height = ScreenUtils.getScreenHeight(mContext)/3;
+        params.width = (int) (ScreenUtils.getScreenWidth(mContext)*0.8);
+        mContentLayout.setLayoutParams(params);
         //设置SelectPicPopupWindow的View
         this.setContentView(mView);
         //设置SelectPicPopupWindow弹出窗体的宽
@@ -58,7 +59,7 @@ public class LibraryPopup extends PopupWindow{
         this.setBackgroundDrawable(dw2);
 		ColorDrawable dw = new ColorDrawable(0x40000000);
 //		//设置SelectPicPopupWindow弹出窗体的背景
-//        mContentLayout.setBackgroundDrawable(dw);
+        mView.setBackgroundDrawable(dw);
         //mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
         mView.setOnTouchListener(new View.OnTouchListener() {
 

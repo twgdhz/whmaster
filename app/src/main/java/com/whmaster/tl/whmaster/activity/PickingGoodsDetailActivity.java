@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,14 +28,14 @@ public class PickingGoodsDetailActivity extends BaseActivity implements IMvpView
     private TextView mKuquText,mKuweiText,mNoText,mTypeText,mTijiText,mZlText;
     private TextView mPlanZs,mPlanNum,mPlanPackBasic,mPlanNumBasic;
     private EditText mActualZs,mActualNum,mMemoEdit;
-    private ImageView mActualZsAdd,mActualZsReduce,mActualNumAdd,mActualNumReduce;
+    private ImageView mActualZsAdd,mActualZsReduce,mActualNumAdd,mActualNumReduce,mBackImage;
     private Bundle mBundle;
     private String mPickDetlId,mBaseUnitCn;
     private Button mSubBtn;
     private ArrayMap<String, Object> mDataMap;
     private int mLeft = 0,mRight = 0,mPlanLeft,mPlanRight,mMaxNum = 0,mPackageCount = 0;
     private String mWeight,mVolume;
-
+    private LinearLayout mTitleLayout;
     @Override
     protected int getLayoutId() {
         return R.layout.picking_goods_detail_layout;
@@ -58,6 +59,10 @@ public class PickingGoodsDetailActivity extends BaseActivity implements IMvpView
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mPlanPackBasic = findViewById(R.id.plan_pack_basic);
         mPlanNumBasic = findViewById(R.id.plan_num_basic);
         mKuquText = findViewById(R.id.kuqu_text);
@@ -88,6 +93,9 @@ public class PickingGoodsDetailActivity extends BaseActivity implements IMvpView
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()){
+            case R.id.back_image:
+                finish();
+                break;
             case R.id.left_reduce_image:
                 if (mLeft > 0) {
                     mLeft--;

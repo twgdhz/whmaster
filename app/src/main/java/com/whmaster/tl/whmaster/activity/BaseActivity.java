@@ -43,6 +43,10 @@ public abstract class BaseActivity extends Activity implements BaseInit,View.OnC
         mAlertDialog = new AlertDialog(this);
         loadingDialog = new LoadingDialog(this);
         msgLoadingDialog = new MsgLoadingDialog(this);
+//                if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+//            finish();
+//            return;
+//        }
 
     }
     protected abstract int getLayoutId();
@@ -114,7 +118,6 @@ public abstract class BaseActivity extends Activity implements BaseInit,View.OnC
 //			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             int statusBarHeight = getStatusBarHeight(this.getBaseContext());
             view.setPadding(0, statusBarHeight, 0, 0);
-            Log.i("com.whmaster.tl.whmaster>>","====222==="+statusBarHeight);
         }
     }
     /**

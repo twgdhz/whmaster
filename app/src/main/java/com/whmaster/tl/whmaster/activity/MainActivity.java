@@ -38,8 +38,8 @@ public class MainActivity extends BaseActivity implements IMvpView{
     private Button mZxBtn;
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
-    private int[] mImageIds={R.mipmap.ic_sh,R.mipmap.ic_rk,R.mipmap.ic_ck,R.mipmap.ic_fh,R.mipmap.ic_yd};
-    private String[] mNames={"实物收货","入库上架","拣货出库","装车复核","移库管理"};
+    private int[] mImageIds={R.mipmap.ic_sh,R.mipmap.ic_rk,R.mipmap.ic_ck,R.mipmap.ic_fh,R.mipmap.ic_yd,R.mipmap.ic_yd};
+    private String[] mNames={"实物收货","入库上架","拣货出库","装车复核","移库管理","盘点管理"};
     private UserPresenter userPresenter;
     private StoragePresenter storagePresenter;
     private String mStorageCount="0",mTaskCount="0",mFhCount="0",mShCount = "0";
@@ -337,16 +337,16 @@ public class MainActivity extends BaseActivity implements IMvpView{
                             startActivity(ChooseLibraryActivity.class,null);
                             break;
                         //盘点
-//                        case 5:
-//                            startActivity(InventoryChoseActivity.class,null);
-//                            break;
+                        case 5:
+                            startActivity(InventoryChoseActivity.class,null);
+                            break;
                     }
                 }
             });
         }
         @Override
         public int getItemCount() {
-            return 5;
+            return 6;
         }
         class MyViewHolder extends RecyclerView.ViewHolder {
             FrameLayout mContentLayout;

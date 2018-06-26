@@ -15,11 +15,14 @@ public class AtyContainerUtils {
 
     private static AtyContainerUtils instance = new AtyContainerUtils();
     private static List<Activity> activityStack = new ArrayList<Activity>();
+    private static List<Activity> LibraryStack = new ArrayList<Activity>();
 
     public static AtyContainerUtils getInstance() {
         return instance;
     }
-
+    public void addLibraryActivity(Activity aty) {
+        LibraryStack.add(aty);
+    }
     public void addActivity(Activity aty) {
         activityStack.add(aty);
     }
@@ -38,5 +41,13 @@ public class AtyContainerUtils {
             }
         }
         activityStack.clear();
+    }
+    public void finishLibraryActivity() {
+        for (int i = 0, size = LibraryStack.size(); i < size; i++) {
+            if (null != LibraryStack.get(i)) {
+                LibraryStack.get(i).finish();
+            }
+        }
+        LibraryStack.clear();
     }
 }

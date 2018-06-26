@@ -35,12 +35,12 @@ import java.util.HashMap;
 public class ReviewListActivity extends BaseActivity implements IMvpView {
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
-    private ImageView mSearchImage;
+    private ImageView mSearchImage,mBackImage;
     private PickingPresenter pickingPresenter;
     private int page = 1, x = 1;
     private TextView mTitleText;
     private ArrayList<ArrayMap<String, Object>> mList, mAddList;
-    private LinearLayout mEmptyLayout;
+    private LinearLayout mEmptyLayout,mTitleLayout;
     private MyBroadcastReceiver myBroadcastReceiver;
 
     @Override
@@ -90,6 +90,10 @@ public class ReviewListActivity extends BaseActivity implements IMvpView {
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.picking_list_recyview);
         mRecyclerView.addItemDecoration(new MyDecoration(this, MyDecoration.HORIZONTAL_LIST));
         mSearchImage = findViewById(R.id.search);
@@ -102,13 +106,18 @@ public class ReviewListActivity extends BaseActivity implements IMvpView {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
+            case R.id.back_image:
+                Intent broadcast = new Intent("main");
+                sendBroadcast(broadcast, null);
+                finish();
+                break;
             case R.id.search:
                 startActivity(ReviewListSearchActivity.class, null);
                 break;
-            case R.id.back:
-                Intent broadcast = new Intent("main");
-                sendBroadcast(broadcast, null);
-                break;
+//            case R.id.back:
+//                Intent broadcast = new Intent("main");
+//                sendBroadcast(broadcast, null);
+//                break;
         }
     }
 

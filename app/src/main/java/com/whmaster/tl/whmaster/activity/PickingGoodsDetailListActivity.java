@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,6 +44,8 @@ public class PickingGoodsDetailListActivity extends BaseActivity implements IMvp
     private String mType = "",mBaseUnitCn;
     private int mPlanNumbers, mNoNumbers = 0;
     private float mWeight, mVolume;
+    private LinearLayout mTitlelayout;
+    private ImageView mBackImage;
 
     @Override
     protected int getLayoutId() {
@@ -91,9 +94,11 @@ public class PickingGoodsDetailListActivity extends BaseActivity implements IMvp
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
         mRecyclerView = findViewById(R.id.picking_goods_detail_recyview);
-//        mTitleText = findViewById(R.id.title_text);
-//        mTitleText.setOnClickListener(this);
+        mTitlelayout = findViewById(R.id.title);
+        mTitlelayout.setVisibility(View.GONE);
         mOrderText = findViewById(R.id.orderid_text);
         mTijiText = findViewById(R.id.m_tiji_text);
         mZlText = findViewById(R.id.m_zl_text);
@@ -107,6 +112,9 @@ public class PickingGoodsDetailListActivity extends BaseActivity implements IMvp
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
+            case R.id.back_image:
+                finish();
+                break;
             case R.id.title_text:
                 break;
         }

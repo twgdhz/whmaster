@@ -12,20 +12,16 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import com.whmaster.tl.whmaster.R;
-import com.whmaster.tl.whmaster.impl.OnScanSuccessListener;
-import com.whmaster.tl.whmaster.impl.SlideInterface;
 
 /**
  * Created by admin on 2017/12/27.
  */
 
-public class SlideView extends View{
+public class SlideView2 extends View{
     private Bitmap mLockBitmap,mSuccessBitmap;
     private int mLockDrawableId,mSuccessDrawableId;
     private Paint mPaint;
@@ -39,16 +35,16 @@ public class SlideView extends View{
     private boolean mIsDragable = false,isSuccess = false;
     private onSuccessInterface mOnSuccessListener;
 
-    public SlideView(Context context) {
+    public SlideView2(Context context) {
         this(context, null);
 
     }
 
-    public SlideView(Context context, AttributeSet attrs) {
+    public SlideView2(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SlideView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SlideView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         TypedArray tp = context.obtainStyledAttributes(attrs, R.styleable.SlideLockView, defStyleAttr, 0);
@@ -103,11 +99,11 @@ public class SlideView extends View{
 //        Log.i("com.whmaster.tl.whmaster>>",mLocationX+"=======");
         if (mLocationX < 0) {
             oval.right=180;
-            canvas.drawRoundRect(oval,360,360,mPaint);
+            canvas.drawRoundRect(oval,10,10,mPaint);
             canvas.drawBitmap(mLockBitmap, 55, 30, mPaint);
         } else if (mLocationX > rightMax) {
             oval.right=120+rightMax;
-            canvas.drawRoundRect(oval,360,360,mPaint);
+            canvas.drawRoundRect(oval,10,10,mPaint);
             if(mLocationX==680.0){
                 canvas.drawBitmap(mSuccessBitmap, rightMax+45, 30, mPaint);
                 mPaint.setColor(Color.WHITE);
@@ -115,7 +111,7 @@ public class SlideView extends View{
             }
         } else {
             oval.right=180+mLocationX;
-            canvas.drawRoundRect(oval,360,360,mPaint);
+            canvas.drawRoundRect(oval,10,10,mPaint);
             canvas.drawBitmap(mLockBitmap, mLocationX+65, 30, mPaint);
         }
     }

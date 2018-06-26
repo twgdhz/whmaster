@@ -33,14 +33,14 @@ import java.util.ArrayList;
 public class PickingListActivity extends BaseActivity implements IMvpView{
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
-    private ImageView mSearchImage;
+    private ImageView mSearchImage,mBackImage;
     private PickingPresenter pickingPresenter;
     private int page = 1,x = 1;
     private Bundle mBundle;
     private String mType,mPickCode="";
     private TextView mTitleText;
     private ArrayList<ArrayMap<String, Object>> mList,mAddList;
-    private LinearLayout mEmptyLayout;
+    private LinearLayout mEmptyLayout,mTitleLayout;
     @Override
     protected int getLayoutId() {
         return R.layout.picking_list_layout;
@@ -84,6 +84,10 @@ public class PickingListActivity extends BaseActivity implements IMvpView{
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.picking_list_recyview);
         mSearchImage = findViewById(R.id.search);
         mSearchImage.setOnClickListener(this);
@@ -95,13 +99,18 @@ public class PickingListActivity extends BaseActivity implements IMvpView{
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()){
+            case R.id.back_image:
+                Intent broadcast = new Intent("main");
+                sendBroadcast(broadcast, null);
+                finish();
+                break;
             case R.id.search:
                 startActivity(PickingListSearchActivity.class,null);
                 break;
-            case R.id.back:
-                Intent broadcast = new Intent("main");
-                sendBroadcast(broadcast, null);
-                break;
+//            case R.id.back:
+//                Intent broadcast = new Intent("main");
+//                sendBroadcast(broadcast, null);
+//                break;
         }
     }
 
@@ -206,15 +215,6 @@ public class PickingListActivity extends BaseActivity implements IMvpView{
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             try{
-//                mDetlList = Constants.getJsonArray(mList.get(position).get("detlList").toString());
-//                proMap = Constants.getJsonObject(mDetlList.get(0).get("productPo").toString());
-//                productMap = Constants.getJsonObject(proMap.get("product").toString());
-//                packageCount = Float.parseFloat(productMap.get("packageCount").toString());
-
-//                planPickCount = Float.parseFloat(mList.get(position).get("actlPickCount").toString());
-//                mVolume = Float.parseFloat(mList.get(position).get("packageLength").toString())*Float.parseFloat(mList.get(position).get("packageWidth").toString())*Float.parseFloat(mList.get(position).get("packageHeight").toString()) / packageCount * planPickCount / 1000000;
-
-//                    mWeight = Float.parseFloat(productMap.get("packageWeight").toString()) / packageCount * planPickCount;
                     String weightV = Constants.format2(mList.get(position).get("planPickWeigth")+"");
                     if(weightV.length()>7){
                         holder.zlText.setTextSize(13);

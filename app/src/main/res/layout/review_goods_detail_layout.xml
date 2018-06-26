@@ -20,33 +20,27 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@color/title_back_color"
+            android:layout_height="150dp"
+            android:background="@mipmap/re_blackground"
             android:orientation="vertical">
-
+            <include
+                android:id="@+id/title_conetnt"
+                layout="@layout/title_library" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
                 android:text="复核-货品详情"
                 android:textColor="@color/white"
-                android:textSize="22sp" />
+                android:textSize="25sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Picking order particulars"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
         </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-50dp">
+            android:layout_marginTop="-30dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -40,6 +40,26 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickingGoodsDetailListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.ReviewGoodsDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+        </activity>
+
+        <activity
+            android:name="com.whmaster.tl.whmaster.activity.PickingGoodsDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+
+        </activity>
+        <activity
             android:name="com.whmaster.tl.whmaster.activity.LoginActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -60,7 +80,7 @@
             android:name="com.whmaster.tl.whmaster.activity.ChooseGoodsNumbersActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden">
+            android:windowSoftInputMode="adjustPan">
 
         </activity>
         <activity
@@ -101,26 +121,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
-        <activity
-            android:name="com.whmaster.tl.whmaster.activity.PickingGoodsDetailListActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
 
-        </activity>
-        <activity
-            android:name="com.whmaster.tl.whmaster.activity.PickingGoodsDetailActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity
             android:name="com.whmaster.tl.whmaster.activity.ReviewGoodsDetailListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name="com.whmaster.tl.whmaster.activity.ReviewGoodsDetailActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
+
         <activity
             android:name="com.whmaster.tl.whmaster.activity.GenerateCkdActivity"
             android:launchMode="singleTask"

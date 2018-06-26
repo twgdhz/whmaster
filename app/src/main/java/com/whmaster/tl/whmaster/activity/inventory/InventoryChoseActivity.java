@@ -7,9 +7,9 @@ import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.activity.BaseActivity;
@@ -27,6 +27,9 @@ public class InventoryChoseActivity extends BaseActivity{
     private XRecyclerView mRecyclerView;
     private TextView mTitleText;
     private RecyAdapter mAdapter;
+    private LinearLayout mTitleLayout;
+    private ImageView mBackImage;
+
     @Override
     protected int getLayoutId() {
         return R.layout.inventory_chose_layout;
@@ -61,6 +64,10 @@ public class InventoryChoseActivity extends BaseActivity{
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mTitleText = findViewById(R.id.tv_title);
         mRecyclerView = findViewById(R.id.inventory_list_recyview);
     }
@@ -68,6 +75,11 @@ public class InventoryChoseActivity extends BaseActivity{
     @Override
     public void onClick(View v) {
         super.onClick(v);
+        switch (v.getId()){
+            case R.id.back_image:
+                finish();
+                break;
+        }
     }
 
     @Override
@@ -95,7 +107,7 @@ public class InventoryChoseActivity extends BaseActivity{
         @Override
         public RecyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             RecyAdapter.MyViewHolder holder = new RecyAdapter.MyViewHolder(LayoutInflater.from(
-                    InventoryChoseActivity.this).inflate(R.layout.inventory_chose_list_item, parent,
+                    InventoryChoseActivity.this).inflate(R.layout.inventory_list_item, parent,
                     false));
             return holder;
         }
@@ -108,15 +120,14 @@ public class InventoryChoseActivity extends BaseActivity{
             holder.mContentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle bundle = new Bundle();
-                    openActivityForResult(ChoseInvertoryListActivity.class, 0, bundle);
+                    startActivity(ChoseInvertoryDetailListActivity.class,null);
                 }
             });
         }
 
         @Override
         public int getItemCount() {
-            return 2;
+            return 5;
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {

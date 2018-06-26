@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.popupwindow.LibraryPopup;
 import com.whmaster.tl.whmaster.presenter.LibraryPresenter;
+import com.whmaster.tl.whmaster.utils.AtyContainerUtils;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
@@ -41,12 +43,13 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
     private EditText mKuquEdit, mKuweiEdit;
     private TextView mConfirmText,mPositionCodeText;
     private LibraryPopup libraryPopup;
-    private String mPositionCode = "",mPositionPointCode="",mMoveCode = "";
+    private String mPositionCode = "",mPositionPointCode="",positionId = "",mPosCode,mCode = "";
     private ArrayList<ArrayMap<String,Object>> mList;
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
     private TextView mTitleName;
-
+    private ImageView mBackImage;
+    private InputMethodManager imm;
     @Override
     protected int getLayoutId() {
         return R.layout.chose_library_layout;
@@ -55,9 +58,10 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AtyContainerUtils.getInstance().addLibraryActivity(this);
         libraryPresenter = new LibraryPresenter(this, this);
         libraryPopup = new LibraryPopup(this);
-
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         RecyclerUtil.init(mRecyclerView,this);
         mRecyclerView.setLoadingMoreEnabled(false);
         mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
@@ -80,10 +84,11 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
         });
     }
 
-
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
         mTitleName = findViewById(R.id.title_name);
         mTitleName.setText("移出库位");
         mPositionCodeText = findViewById(R.id.position_code_text);
@@ -92,6 +97,7 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
         mTitleLayout.setVisibility(View.GONE);
         mConfirmText = findViewById(R.id.confirm_text);
         mConfirmText.setOnClickListener(this);
+
         mKuquEdit = findViewById(R.id.kuqu_edit);
         mKuweiEdit = findViewById(R.id.kuwei_edit);
         mLayout = findViewById(R.id.chose_layout);
@@ -102,20 +108,21 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
     private TextWatcher kuquTextwatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            logcat("状态监听beforeTextChanged");
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            logcat("状态监听onTextChanged");
-
             if(!s.toString().equals("")){
                 if(mRecyclerView.getVisibility()!=View.VISIBLE){
                     mRecyclerView.setVisibility(View.VISIBLE);
                 }
+//                if(mKuweiEdit.getText().toString().equals("")){
+//                    mPositionPointCode = "";
+//                }
                 mPositionCode = s.toString();
-                libraryPresenter.getMovePosition(mPositionCode,mPositionPointCode);
+                libraryPresenter.getMovePosition(mPositionCode,mKuweiEdit.getText().toString());
             }else{
                 mRecyclerView.setVisibility(View.GONE);
+                imm.hideSoftInputFromWindow(mKuquEdit.getWindowToken(), 0);
             }
         }
 
@@ -139,8 +146,10 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
                     mRecyclerView.setVisibility(View.VISIBLE);
                 }
                 mPositionPointCode = s.toString();
-                libraryPresenter.getMovePosition(mPositionCode,mPositionPointCode);
+                libraryPresenter.getMovePosition(mKuquEdit.getText().toString(),mPositionPointCode);
             }else{
+
+                imm.hideSoftInputFromWindow(mKuquEdit.getWindowToken(), 0);
                 mRecyclerView.setVisibility(View.GONE);
             }
         }
@@ -149,11 +158,15 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
+            case R.id.back_image:
+                    finish();
+                break;
             case R.id.confirm_text:
                 if(!mPositionCodeText.getText().toString().equals("")){
                     Bundle bundle = new Bundle();
-                    bundle.putString("code",mMoveCode);
-                    bundle.putString("positionCode",mPositionCodeText.getText().toString());
+                    bundle.putString("positionId",positionId);
+                    bundle.putString("code",mCode);
+                    bundle.putString("posCode",mPosCode);
                     startActivity(ChooseLibraryGoodsActivity.class,bundle);
                 }else{
                     Toast.makeText(this,"请选择区域和点位",Toast.LENGTH_SHORT).show();
@@ -251,11 +264,11 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
             holder.mContentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPositionCodeText.setText(mList.get(position).get("positionCode").toString());
-                    mMoveCode = mList.get(position).get("positionId").toString();
+                    mPositionCodeText.setText(mList.get(position).get("posCode").toString());
+                    mCode = mList.get(position).get("positionCode").toString();
+                    positionId = mList.get(position).get("positionId").toString();
+                    mPosCode = mList.get(position).get("posCode").toString();
                     mRecyclerView.setVisibility(View.GONE);
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
                     imm.hideSoftInputFromWindow(mKuquEdit.getWindowToken(), 0);
                 }
             });
@@ -282,8 +295,10 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
             if (arg1.getAction().equals(m_Broadcastname)) {
                 String str = arg1.getStringExtra("BARCODE");
                 if (!"".equals(str)) {
-                    mOldPositionCode = str;
-                    mPositionCodeText.setText(str);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("code",str);
+                    bundle.putString("posCode",str);
+                    startActivity(ChooseLibraryGoodsActivity.class,bundle);
                     logcat("获取获取扫描条形码" + str);
                 } else {
                     Toast.makeText(ChooseLibraryActivity.this, "请扫描正确的条形码！", Toast.LENGTH_SHORT).show();

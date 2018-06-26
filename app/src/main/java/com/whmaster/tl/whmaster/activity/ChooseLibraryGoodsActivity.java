@@ -3,10 +3,12 @@ package com.whmaster.tl.whmaster.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,18 @@ import android.widget.TextView;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
+import com.whmaster.tl.whmaster.common.Constants;
 import com.whmaster.tl.whmaster.presenter.LibraryPresenter;
+import com.whmaster.tl.whmaster.utils.AtyContainerUtils;
 import com.whmaster.tl.whmaster.utils.DensityUtils;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
+import com.whmaster.tl.whmaster.widget.SlideView;
+import com.whmaster.tl.whmaster.widget.SlideView2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,20 +43,22 @@ import java.util.regex.Pattern;
  * 选择货品
  */
 
-public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView{
+public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView,SlideView2.onSuccessInterface{
 
     private XRecyclerView xRecyclerView;
     private RecyAdapter mAdapter;
-    private Button mNextBtn;
+    private SlideView2 mNextBtn;
     private Bundle mBundle;
-    private String mPositionCode,mCode;
+    private String mPositionId,mCode,mPosCode;
     private LibraryPresenter libraryPresenter;
     private ArrayList<ArrayMap<String,Object>> mList;
     private TextView mOldText;
     private boolean isNext = false;
     private LinearLayout mEmptyLayout,mTitleLayout;
     private ArrayList<ArrayMap<String,Object>> mDataList;
-
+    private ArrayMap<String,Object> mDataMap;
+    private ImageView mBackImage;
+    private Map<Integer, Boolean> mIsCheckMap = new HashMap<Integer, Boolean>();
     @Override
     protected int getLayoutId() {
         return R.layout.chose_goods_list_layout;
@@ -57,13 +67,15 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AtyContainerUtils.getInstance().addLibraryActivity(this);
         libraryPresenter = new LibraryPresenter(this,this);
         mBundle = getIntent().getExtras();
         if(mBundle!=null){
-            mPositionCode = mBundle.getString("positionCode");
+            mPositionId = mBundle.getString("positionId");
             mCode = mBundle.getString("code");
+            mPosCode = mBundle.getString("posCode");
 //            libraryPresenter.getListByPositionCode(moldPositionCode);
-            mOldText.setText("库位码："+mPositionCode);
+            mOldText.setText("库位码："+mPosCode);
         }
         RecyclerUtil.init(xRecyclerView,this);
         xRecyclerView.setLoadingMoreEnabled(false);
@@ -71,29 +83,65 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
         libraryPresenter.getProductByPosition(mCode);
 //        libraryPresenter.getProductByPosition(mPositionCode);
         mDataList = new ArrayList<>();
+
     }
 
     @Override
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()){
-            case R.id.sub_btn:
-                if(mDataList!=null && mDataList.size()>0){
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("list",mDataList);
-                    bundle.putString("code",mCode);
-                    startActivity(ChooseGoodsNumbersActivity.class,bundle);
-                }
+            case R.id.back_image:
+                mAlertDialog.builder().setTitle("提示")
+                        .setMsg("是否重新选择库位？")
+                        .setPositiveButton("确认", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mAlertDialog.dismiss();
+                            }
+                        })
+                        .show();
                 break;
         }
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                mAlertDialog.builder().setTitle("提示")
+                        .setMsg("是否重新选择库位？")
+                        .setPositiveButton("确认", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mAlertDialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
         mTitleLayout = findViewById(R.id.title);
         mNextBtn = findViewById(R.id.sub_btn);
-        mNextBtn.setOnClickListener(this);
+        mNextBtn.setOnSuccessListener(this);
         xRecyclerView = findViewById(R.id.choose_goods_recy_view);
         mOldText = findViewById(R.id.old_code);
         mEmptyLayout = findViewById(R.id.empty_layout);
@@ -104,6 +152,7 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
         switch (requestCode){
             case 0:
                 isNext = false;
+                mNextBtn.resetXy();
                 break;
         }
     }
@@ -143,8 +192,15 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
     public void onSuccess(String type, Object object) {
         switch (type){
             case "list":
-                mList = (ArrayList<ArrayMap<String, Object>>) object;
+                mDataMap = (ArrayMap<String, Object>) object;
+                mPositionId = mDataMap.get("positionId").toString();
+                mList = Constants.getJsonArray(mDataMap.get("moveProductList").toString());
+//                mList = (ArrayList<ArrayMap<String, Object>>) object;
                 if(mList!=null && mList.size()>0){
+                    for (int i = 0; i < mList.size(); i++) {
+                        // 设置默认的显示
+                        mIsCheckMap.put(i, false);
+                    }
                     mAdapter = new RecyAdapter();
                     xRecyclerView.setAdapter(mAdapter);
                     xRecyclerView.setVisibility(View.VISIBLE);
@@ -169,6 +225,32 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
         loadingDialog.dismiss();
     }
 
+    @Override
+    public void onExcute() {
+        if(mDataList!=null && mDataList.size()>0){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("list",mDataList);
+            bundle.putString("code",mCode);
+            bundle.putString("positionId",mPositionId);
+            bundle.putString("posCode",mPosCode);
+            openActivityForResult(ChooseGoodsNumbersActivity.class,0,bundle);
+//            startActivity(ChooseGoodsNumbersActivity.class,bundle);
+        }else{
+            handler.sendEmptyMessageDelayed(0, 500);
+        }
+    }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    mNextBtn.resetXy();
+                    break;
+            }
+        }
+    };
     class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.MyViewHolder> {
         MyViewHolder holder;
         @Override
@@ -176,6 +258,7 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
             holder = new MyViewHolder(LayoutInflater.from(
                     ChooseLibraryGoodsActivity.this).inflate(R.layout.chose_goods_list_item_layout, parent,
                     false));
+
             return holder;
         }
 
@@ -191,32 +274,39 @@ public class ChooseLibraryGoodsActivity extends BaseActivity implements IMvpView
                 holder.productNo.setText(mList.get(position).get("batchNo").toString());
             }
             if(mList.get(position).get("inventoryNum")!=null){
-                holder.sumNumbers.setText(mList.get(position).get("inventoryNum").toString()+mList.get(position).get("baseUnitCn").toString());
+                holder.sumNumbers.setText(mList.get(position).get("inventoryNum").toString()+mList.get(position).get("baseUnitCn")+"");
             }
             if(mList.get(position).get("packageSpec")!=null){
                 holder.productGuige.setText(mList.get(position).get("packageSpec").toString());
             }
             if(mList.get(position).get("packageCount")!=null){
                 int packCount =  Integer.parseInt(mList.get(position).get("packageCount").toString());
+                if(packCount>0){
+//                logcat(mList.get(position).get("packageCount").toString()+"===="+packCount);
                 int moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packCount;
                 int moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packCount;
                 if(moveZs>0){
-                    holder.productNumbers.setText(moveZs+mList.get(position).get("packageUnitCn").toString() + "/" + moveNum+mList.get(position).get("baseUnitCn").toString());
+                    holder.productNumbers.setText(moveZs+mList.get(position).get("packageUnitCn").toString() + "" + moveNum+mList.get(position).get("baseUnitCn").toString());
                 }else{
                     holder.productNumbers.setText(moveNum+mList.get(position).get("baseUnitCn").toString());
+                }
                 }
             }
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mIsCheckMap.put(position, isChecked);
                     if(isChecked){
                         mDataList.add(mList.get(position));
                     }else{
                         mDataList.remove(mList.get(position));
                     }
-                    logcat(mDataList+"=====");
                 }
             });
+            if (mIsCheckMap.get(position) == null) {
+                mIsCheckMap.put(position, false);
+            }
+            holder.checkBox.setChecked(mIsCheckMap.get(position));
         }
         @Override
         public int getItemCount() {

@@ -1,6 +1,7 @@
 package com.whmaster.tl.whmaster.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import com.whmaster.tl.whmaster.R;
 import com.whmaster.tl.whmaster.common.Constants;
 import com.whmaster.tl.whmaster.presenter.UserPresenter;
+import com.whmaster.tl.whmaster.utils.AtyContainerUtils;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
 
@@ -22,7 +24,6 @@ public class StartActivity extends BaseActivity implements IMvpView{
     private LinearLayout mTitleLayout;
     private SharedPreferences sp;
     private boolean isLogin = false;
-//    private UserPresenter userPresenter;
     private ArrayMap<String,Object> mMap;
     @Override
     protected int getLayoutId() {
@@ -32,12 +33,17 @@ public class StartActivity extends BaseActivity implements IMvpView{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        userPresenter = new UserPresenter(this,this);
-//        userPresenter.islogin();
         sp = getSharedPreferences("whmasterUser", Context.MODE_PRIVATE);
-        logcat(sp.getString("cookie",null)+"=======获取token=======");
-        Constants.token = sp.getString("cookie",null);
-        handler.sendEmptyMessageDelayed(1, 1200);
+        logcat(sp.getString("token",null)+"=======获取token=======");
+        Constants.token = sp.getString("token",null);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            //结束你的activity
+            finish();
+            logcat("结束所有activity");
+            return;
+        }else{
+            handler.sendEmptyMessageDelayed(1, 1200);
+        }
     }
 
     Handler handler = new Handler() {
@@ -47,13 +53,6 @@ public class StartActivity extends BaseActivity implements IMvpView{
             switch (msg.what) {
                 case 1:
                     startActivity(LoginActivity.class,null);
-//                    if(isLogin){
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("username",sp.getString("name",null)+"");
-//                        startActivity(MainActivity.class,bundle);
-//                    }else{
-//                        startActivity(LoginActivity.class,null);
-//                    }
                     finish();
                     break;
             }

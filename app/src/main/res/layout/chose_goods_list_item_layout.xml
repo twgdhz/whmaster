@@ -15,7 +15,7 @@
 
         <CheckBox
             android:id="@+id/check_box"
-            android:layout_width="24dp"
+            android:layout_width="30dp"
             android:layout_height="24dp"
             android:button="@drawable/bg_selector_style3" />
 

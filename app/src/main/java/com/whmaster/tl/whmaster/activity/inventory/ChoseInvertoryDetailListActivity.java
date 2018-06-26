@@ -7,6 +7,7 @@ import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -24,6 +25,9 @@ public class ChoseInvertoryDetailListActivity extends BaseActivity{
 
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
+    private LinearLayout mTitleLayout;
+    private ImageView mBackImage;
+
     @Override
     protected int getLayoutId() {
         return R.layout.chose_invertory_detail_list_layout;
@@ -58,12 +62,21 @@ public class ChoseInvertoryDetailListActivity extends BaseActivity{
     @Override
     public void initViews() {
         super.initViews();
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.invertory_detail_list_recyview);
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         super.onClick(v);
+        switch (v.getId()){
+            case R.id.back_image:
+                finish();
+                break;
+        }
     }
 
     @Override

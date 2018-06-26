@@ -16,33 +16,27 @@
         android:background="@color/color2"
         android:layout_below="@+id/title"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@color/title_back_color"
+            android:layout_height="150dp"
+            android:background="@mipmap/re_blackground"
             android:orientation="vertical">
+
+            <include
+                android:id="@+id/title_conetnt"
+                layout="@layout/title_library" />
 
             <TextView
                 android:id="@+id/title_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="选盘详情"
+                android:layout_height="70dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="盘点管理"
                 android:textColor="@color/white"
-                android:textSize="22sp" />
+                android:textSize="25sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Details of thelinventory"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,28 +76,34 @@
                 android:layout_height="5dp"
                 android:background="@drawable/dash_line"
                 android:layerType="software" />
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
                 android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/current_pandian"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/back"
-                    android:layout_weight="5"
-                    android:textSize="14sp"
-                    android:text="151515/"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/current_pandian"
-                    android:text="当前盘点总库存"/>
-            </RelativeLayout>
+                    android:padding="10dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/current_pandian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/back"
+                        android:layout_weight="5"
+                        android:textSize="14sp"
+                        android:text="151515/"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="14sp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/current_pandian"
+                        android:text="当前盘点总库存"/>
+                </RelativeLayout>
+            </LinearLayout>
+
         </LinearLayout>
         <com.jcodecraeer.xrecyclerview.XRecyclerView
             android:id="@+id/invertory_detail_list_recyview"

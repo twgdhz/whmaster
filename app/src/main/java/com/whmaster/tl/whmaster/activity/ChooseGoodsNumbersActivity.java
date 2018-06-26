@@ -1,24 +1,35 @@
 package com.whmaster.tl.whmaster.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.whmaster.tl.whmaster.R;
+import com.whmaster.tl.whmaster.utils.AtyContainerUtils;
 import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
+import com.whmaster.tl.whmaster.widget.MyEditText;
+import com.whmaster.tl.whmaster.widget.SlideView;
+import com.whmaster.tl.whmaster.widget.SlideView2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,17 +39,20 @@ import java.util.HashMap;
  * 移库数量选择
  */
 
-public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView{
+public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView,SlideView2.onSuccessInterface{
 
     private Bundle mBundle;
     private XRecyclerView mRecyclerView;
     private ArrayList<HashMap<String,Object>> mList;
     private RecyAdapter mAdapter;
     private LinearLayout mTitleLayout;
-    private Button mBtn;
+    private SlideView2 mBtn;
     private EditText mMemoEdit;
-    private String mPositionCode;
-    private TextView mCodeText;
+    private String mCode,mPositionId,mPosCode;
+//    private TextView mCodeText;
+    private boolean isNext = false;
+    private ImageView mBackImage;
+    private LinearLayout mScrollViewLayout;
 
     @Override
     protected int getLayoutId() {
@@ -49,6 +63,7 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         RecyclerUtil.init(mRecyclerView,this);
+        AtyContainerUtils.getInstance().addLibraryActivity(this);
         mRecyclerView.setLoadingMoreEnabled(false);
         mRecyclerView.setPullRefreshEnabled(false);
         mRecyclerView.setHasFixedSize(true);
@@ -56,9 +71,11 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
         mBundle = getIntent().getExtras();
         if(mBundle!=null){
             mList = (ArrayList<HashMap<String, Object>>) mBundle.getSerializable("list");
-            mPositionCode = mBundle.getString("code");
+            mCode = mBundle.getString("code");
+            mPosCode = mBundle.getString("posCode");
+            mPositionId = mBundle.getString("positionId");
         }
-        mCodeText.setText("移动单位："+mPositionCode);
+//        mCodeText.setText("移动单位："+mPosCode);
         mAdapter = new RecyAdapter();
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -66,11 +83,19 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
     @Override
     public void initViews() {
         super.initViews();
-        mCodeText = findViewById(R.id.old_code);
+        mScrollViewLayout = findViewById(R.id.content_layout);
+
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
+//        mCodeText = findViewById(R.id.old_code);
         mTitleLayout = findViewById(R.id.title);
         mRecyclerView = findViewById(R.id.choose_goods_numbers_recy_view);
+        LinearLayoutManager mManager = new LinearLayoutManager(this);
+        mManager.setStackFromEnd(true);
+        mRecyclerView.setLayoutManager(mManager);
+
         mBtn = findViewById(R.id.sub_btn);
-        mBtn.setOnClickListener(this);
+        mBtn.setOnSuccessListener(this);
         mMemoEdit = findViewById(R.id.memo_edit);
     }
 
@@ -78,16 +103,59 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()){
-            case R.id.sub_btn:
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("list",mList);
-                bundle.putString("memo",mMemoEdit.getText().toString());
-                bundle.putString("code",mPositionCode);
-                startActivity(ChooseGoodsMoveActivity.class,bundle);
+            case R.id.back_image:
+                mAlertDialog.builder().setTitle("提示")
+                        .setMsg("是否返回货品选择页面？")
+                        .setPositiveButton("确认", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Bundle bundle = new Bundle();
+                                setResultOk(bundle);
+                            }
+                        })
+                        .setNegativeButton("取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mAlertDialog.dismiss();
+                            }
+                        })
+                        .show();
                 break;
         }
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 0:
+                mBtn.resetXy();
+                break;
+        }
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                mAlertDialog.builder().setTitle("提示")
+                        .setMsg("是否返回货品选择页面？")
+                        .setPositiveButton("确认", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Bundle bundle = new Bundle();
+                                setResultOk(bundle);
+                            }
+                        })
+                        .setNegativeButton("取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mAlertDialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     @Override
     public void initListeners() {
         super.initListeners();
@@ -124,8 +192,42 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
     public void hideLoading() {
     }
 
+    @Override
+    public void onExcute() {
+        for(int i=0;i<mList.size();i++){
+            logcat("list的数量是否为0"+mList.get(i).get("moveNum"));
+            if(!mList.get(i).get("moveNum").toString().equals("0")){
+                isNext = true;
+            }
+        }
+        if(isNext){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("list",mList);
+            bundle.putString("memo",mMemoEdit.getText().toString());
+            bundle.putString("code",mCode);
+            bundle.putString("positionId",mPositionId);
+            openActivityForResult(ChooseGoodsMoveActivity.class,0,bundle);
+        }else{
+            Toast.makeText(this,"未选择任何货品",Toast.LENGTH_SHORT).show();
+            handler.sendEmptyMessageDelayed(0,500);
+        }
+    }
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    mBtn.resetXy();
+                    break;
+            }
+        }
+    };
     class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.MyViewHolder> {
         MyViewHolder holder;
+        int packageCount = 0,moveNum,moveZs,inventoryNum;
+        boolean isNum = false,isZs = false;
+        private TextWatcher zsTextWatcher,numTextWatcher;
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             holder = new MyViewHolder(LayoutInflater.from(
@@ -136,6 +238,7 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
             mList.get(position).put("moveNum","0");
             if(mList.get(position).get("productName")!=null){
                 holder.productName.setText(mList.get(position).get("productName").toString());
@@ -152,12 +255,12 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
             if(mList.get(position).get("inventoryNum")!=null){
                 holder.sumNumbers.setText(mList.get(position).get("baseUnitCn").toString());
             }
+            moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
+            moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
+            inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
             if(mList.get(position).get("packageCount")!=null){
-                int packCount =  Integer.parseInt(mList.get(position).get("packageCount").toString());
-                int moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packCount;
-                int moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packCount;
                 if(moveZs>0){
-                    holder.productNumbers.setText(moveZs+mList.get(position).get("packageUnitCn").toString() + "/" + moveNum+mList.get(position).get("baseUnitCn").toString());
+                    holder.productNumbers.setText(moveZs+mList.get(position).get("packageUnitCn").toString() + "" + moveNum+mList.get(position).get("baseUnitCn").toString());
                 }else{
                     holder.productNumbers.setText(moveNum+mList.get(position).get("baseUnitCn").toString());
                 }
@@ -168,21 +271,35 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
                 }
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    isNum = true;
                     int m = 0,sum = 0,zs = 0;
-                    int packCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+                    packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+                    moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
+                    moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
+                    inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
                     if(s!=null && !s.toString().equals("")){
                         m = Integer.parseInt(s.toString());
                     }
                     if(holder.baseZsEdit.getText().toString()!=null && !holder.baseZsEdit.getText().toString().equals("")){
                         zs = Integer.parseInt(holder.baseZsEdit.getText().toString());
                     }
-                    sum = m + packCount*zs;
-                    if(sum <= Integer.parseInt(mList.get(position).get("inventoryNum").toString())){
-                        holder.sumNumbers.setText(sum + mList.get(position).get("baseUnitCn").toString());
-                        mList.get(position).put("moveNum",sum+"");
-                    }else{
-                        Toast.makeText(ChooseGoodsNumbersActivity.this,"移库数量大于可移库总量",Toast.LENGTH_SHORT).show();
-                    }
+//                    if(m<=packageCount){
+//                        sum = m + packageCount*zs;
+//                    }else{
+//                        sum = packageCount + packageCount*zs;
+//                        holder.baseUnitEdit.setText(packageCount+"");
+//                    }
+//                    mList.get(position).put("moveNum",sum+"");
+                        sum = m + packageCount*zs;
+                        if(sum <= inventoryNum){
+                            holder.sumNumbers.setText(sum + mList.get(position).get("baseUnitCn").toString());
+                            mList.get(position).put("moveNum",sum+"");
+                        }else{
+                            holder.sumNumbers.setText(inventoryNum + mList.get(position).get("baseUnitCn").toString());
+                            holder.baseUnitEdit.setText(moveNum+"");
+                            mList.get(position).put("moveNum",inventoryNum+"");
+                            Toast.makeText(ChooseGoodsNumbersActivity.this,"移库数量不能大于可移库总量",Toast.LENGTH_SHORT).show();
+                        }
                 }
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -195,6 +312,10 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     int m = 0,sum = 0,zs = 0;
+                    packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+                    inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
+                    moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
+                    moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
                     int packCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
                     if(s!=null && !s.toString().equals("")){
                         zs = Integer.parseInt(s.toString());
@@ -203,17 +324,96 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
                         m = Integer.parseInt(holder.baseUnitEdit.getText().toString());
                     }
                     sum = m + packCount*zs;
-                    if(sum <= Integer.parseInt(mList.get(position).get("inventoryNum").toString())) {
+                    if(sum <= inventoryNum) {
                         holder.sumNumbers.setText(sum + mList.get(position).get("baseUnitCn").toString());
                         mList.get(position).put("moveNum",sum+"");
                     }else{
-                        Toast.makeText(ChooseGoodsNumbersActivity.this,"移库数量大于可移库总量",Toast.LENGTH_SHORT).show();
+                        logcat(moveZs+"==="+mList.get(position).get("inventoryNum").toString());
+                        holder.sumNumbers.setText(inventoryNum + mList.get(position).get("baseUnitCn").toString());
+                        holder.baseZsEdit.setText("0");
+                        mList.get(position).put("moveNum",inventoryNum+"");
+                        Toast.makeText(ChooseGoodsNumbersActivity.this,"移库数量不能大于可移库总量",Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
                 public void afterTextChanged(Editable s) {
                 }
             });
+
+//           numTextWatcher = new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    holder.baseZsEdit.clearTextChangedListeners();
+//                    int m = 0,sum = 0,zs = 0;
+//                    packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+//                    moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
+//                    moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
+//                    inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
+//                    if(s!=null && !s.toString().equals("")){
+//                        m = Integer.parseInt(s.toString());
+//                    }
+//                    if(holder.baseZsEdit.getText().toString()!=null && !holder.baseZsEdit.getText().toString().equals("")){
+//                        zs = Integer.parseInt(holder.baseZsEdit.getText().toString());
+//                    }
+//                    sum = m + packageCount*zs;
+//                    if(sum <= inventoryNum){
+//                        holder.sumNumbers.setText(sum + mList.get(position).get("baseUnitCn").toString());
+//                        mList.get(position).put("moveNum",sum+"");
+//                    }else{
+//                        holder.sumNumbers.setText(inventoryNum + mList.get(position).get("baseUnitCn").toString());
+//                        holder.baseUnitEdit.setText(moveNum+"");
+//                        mList.get(position).put("moveNum",inventoryNum+"");
+//                        Toast.makeText(ChooseGoodsNumbersActivity.this,"移库数量不能大于可移库总量",Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    holder.baseZsEdit.addTextChangedListener(zsTextWatcher);
+//                }
+//            };
+//           zsTextWatcher = new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    holder.baseUnitEdit.clearTextChangedListeners();
+//                    int m = 0,sum = 0,zs = 0;
+//                    inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
+//                    moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
+//                    moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
+//                    packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+//                    if(s!=null && !s.toString().equals("")){
+//                        zs = Integer.parseInt(s.toString());
+//                    }
+//                    if(holder.baseUnitEdit.getText().toString()!=null && !holder.baseUnitEdit.getText().toString().equals("")){
+//                        m = Integer.parseInt(holder.baseUnitEdit.getText().toString());
+//                    }
+//                    sum = m + packageCount*zs;
+//                    if(sum <= inventoryNum) {
+//                        holder.sumNumbers.setText(sum + mList.get(position).get("baseUnitCn").toString());
+//                        mList.get(position).put("moveNum",sum+"");
+//                    }else{
+////                        logcat(moveZs+"==="+moveNum+"==="+inventoryNum+"==="+mList.get(position).get("inventoryNum").toString());
+//                        holder.sumNumbers.setText(inventoryNum + mList.get(position).get("baseUnitCn").toString());
+//                        holder.baseZsEdit.setText("0");
+////                        holder.baseUnitEdit.setText("0");
+//                        mList.get(position).put("moveNum",inventoryNum+"");
+//                        Toast.makeText(ChooseGoodsNumbersActivity.this,"移库数量不能大于可移库总量",Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    holder.baseUnitEdit.addTextChangedListener(numTextWatcher);
+//                }
+//            };
+//
+//            holder.baseUnitEdit.addTextChangedListener(numTextWatcher);
+//            holder.baseZsEdit.addTextChangedListener(zsTextWatcher);
+
             holder.baseUnit.setText(mList.get(position).get("baseUnitCn").toString());
             holder.baseZs.setText(mList.get(position).get("packageUnitCn").toString());
         }
@@ -224,7 +424,7 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
 
         class MyViewHolder extends RecyclerView.ViewHolder {
             TextView productName, productSku,productNo,productNumbers,productGuige,sumNumbers,baseUnit,baseZs;
-            EditText baseUnitEdit,baseZsEdit;
+            MyEditText baseUnitEdit,baseZsEdit;
             LinearLayout mContentLayout;
             public MyViewHolder(View view) {
                 super(view);

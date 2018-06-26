@@ -123,7 +123,7 @@
             android:background="@color/white"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="可移库数量"
+            android:text="当前库位数量"
             android:textColor="@color/color26"
             android:textSize="14sp" />
 
@@ -209,13 +209,14 @@
             android:textColor="@color/color26"
             android:textSize="14sp" />
 
-        <EditText
+        <com.whmaster.tl.whmaster.widget.MyEditText
             android:id="@+id/base_zs_edit"
-            android:layout_width="30dp"
+            android:layout_width="40dp"
             android:layout_height="30dp"
             android:background="@drawable/bg_my_style24"
             android:gravity="center"
             android:hint="0"
+            android:maxLength="6"
             android:inputType="numberDecimal"
             android:textColor="@color/back"
             android:textSize="14sp" />
@@ -225,19 +226,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_weight="2"
+            android:layout_weight="1.6"
             android:gravity="right"
             android:textColor="@color/back"
             android:textSize="14sp" />
 
-        <EditText
+        <com.whmaster.tl.whmaster.widget.MyEditText
             android:id="@+id/base_unit_edit"
-            android:layout_width="30dp"
+            android:layout_width="40dp"
             android:layout_height="30dp"
             android:layout_marginLeft="5dp"
             android:background="@drawable/bg_my_style24"
             android:gravity="center"
             android:hint="0"
+            android:maxLength="6"
             android:inputType="numberDecimal"
             android:textColor="@color/back"
             android:textSize="14sp" />
@@ -247,7 +249,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_weight="2"
+            android:layout_weight="1.6"
             android:gravity="right"
             android:textColor="@color/back"
             android:textSize="14sp" />

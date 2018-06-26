@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,6 +45,8 @@ public class ReviewGoodsDetailListActivity extends BaseActivity implements IMvpV
     private TextView mOrderTex, mTijiText, mZlText, mPlanNumberText, mNoNumberText;
     private float mVolume, mWeight;
     private int mPlanOutCount;
+    private LinearLayout mTitleLayout;
+    private ImageView mBackImage;
 
     @Override
     protected int getLayoutId() {
@@ -91,6 +94,10 @@ public class ReviewGoodsDetailListActivity extends BaseActivity implements IMvpV
     @Override
     public void initViews() {
         super.initViews();
+        mBackImage = findViewById(R.id.back_image);
+        mBackImage.setOnClickListener(this);
+        mTitleLayout = findViewById(R.id.title);
+        mTitleLayout.setVisibility(View.GONE);
         mRecyclerView = findViewById(R.id.picking_goods_detail_recyview);
         mRecyclerView.addItemDecoration(new MyDecoration(this, MyDecoration.HORIZONTAL_LIST));
         mSubBtn = findViewById(R.id.sub_btn);
@@ -106,11 +113,16 @@ public class ReviewGoodsDetailListActivity extends BaseActivity implements IMvpV
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()){
-            case R.id.back:
+            case R.id.back_image:
                 Intent broadcast = new Intent("review");
                 sendBroadcast(broadcast, null);
                 finish();
                 break;
+//            case R.id.back:
+//                Intent broadcast = new Intent("review");
+//                sendBroadcast(broadcast, null);
+//                finish();
+//                break;
         }
     }
 

@@ -31,7 +31,7 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
         map.put("token",Constants.token);
         map.put("positionCode",positionCode);
         map.put("positionPointCode",positionPointCode);
-        mImvpView.showLoading();
+//        mImvpView.showLoading();
         RetrofitHttp.getInstance(mContext).postJson(Constants.getMovePosition, map, new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -40,6 +40,11 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
             @Override
             public void onError(Throwable e) {
                 Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError失败=======");
+                if(e.toString().indexOf("SocketTimeoutException")!= -1){
+                    mImvpView.onFail("连接超时，请重试。");
+                }else{
+                    mImvpView.onFail(e+"");
+                }
                 mImvpView.hideLoading();
             }
             @Override
@@ -62,7 +67,7 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
     public void getProductByPosition(String positionCode) {
         Map map = new HashMap();
         map.put("token",Constants.token);
-        map.put("positionId",positionCode);
+        map.put("positionCode",positionCode);
         mImvpView.showLoading();
         RetrofitHttp.getInstance(mContext).postJson(Constants.getProductByPosition, map, new Subscriber<String>() {
             @Override
@@ -72,6 +77,11 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
             @Override
             public void onError(Throwable e) {
                 Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError失败=======");
+                if(e.toString().indexOf("SocketTimeoutException")!= -1){
+                    mImvpView.onFail("连接超时，请重试。");
+                }else{
+                    mImvpView.onFail(e+"");
+                }
                 mImvpView.hideLoading();
             }
             @Override
@@ -79,8 +89,9 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
                 mDataMap = Constants.getJsonObjectByData(s);
                 if(mDataMap!=null && mDataMap.get("resultCode").equals("0000")){
                     mTempMap = Constants.getJsonObject(s);
-                    mTempList = Constants.getJsonArray(mTempMap.get("value").toString());
-                    mImvpView.onSuccess("list",mTempList);
+                    mTempMap2 = Constants.getJsonObject(mTempMap.get("value").toString());
+//                    mTempList = Constants.getJsonArray(mTempMap.get("value").toString());
+                    mImvpView.onSuccess("list",mTempMap2);
                 }else{
                     mImvpView.onFail(mDataMap.get("resultMessage")+"");
                 }
@@ -105,6 +116,11 @@ public class LibraryPresenter extends BasePresenter implements LibraryInterface{
             @Override
             public void onError(Throwable e) {
                 Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError失败=======");
+                if(e.toString().indexOf("SocketTimeoutException")!= -1){
+                    mImvpView.onFail("连接超时，请重试。");
+                }else{
+                    mImvpView.onFail(e+"");
+                }
                 mImvpView.hideLoading();
             }
             @Override
