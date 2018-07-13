@@ -80,19 +80,7 @@ public class RksjActivity extends BaseActivity implements IMvpView {
         super.onClick(v);
         switch (v.getId()) {
             case R.id.sub_btn:
-//                if (Integer.parseInt(mActualZs.getText().toString()) > 0 || Integer.parseInt(mActualNum.getText().toString()) > 0) {
-//                        msgLoadingDialog.builder().setMsg("正在上架").show();
-//                    ArrayList list = new ArrayList();
-//                    ArrayMap map = new ArrayMap();
-//                    map.put("stockInDetailId", mDetailId);
-//                    map.put("actPackageNum", mLeft + "");
-//                    map.put("actNum", mRight + "");
-//                    map.put("storePositionId", storePositionId);
-//                    list.add(map);
-//                    logcat("数据上架"+list);
-//                    storagePresenter.shelfProductStockInTask(mDetailId, JSON.toJSONString(list));
                 mDatamap = new HashMap<>();
-
                 int counts = mLeft*mPackageCount + mRight;
                 if(counts <= mMax){
                     mDatamap.put("stockInDetailId", mDetailId);
@@ -241,15 +229,6 @@ public class RksjActivity extends BaseActivity implements IMvpView {
         @Override
         public void onBindViewHolder(final RecyAdapter.MyViewHolder holder, final int position) {
 
-//            if (mList.get(position).get("planPackageNum") != null && !mList.get(position).get("planPackageNum").toString().equals("")) {
-//                holder.planZs.setText(mList.get(position).get("planPackageNum").toString());
-//                holder.mZs.setText(mList.get(position).get("planPackageNum").toString());
-//                maxLeft = Integer.parseInt(mList.get(position).get("planPackageNum") + "");
-//                left = maxLeft;
-//            } else {
-//                holder.planZs.setText("0");
-//                holder.mZs.setText("0");
-//            }
             if (mList.get(position).get("packageCount") != null && !mList.get(position).get("packageCount").toString().equals("")) {
                 holder.planZs.setText(mLeft+"");
                 holder.mZs.setText(mLeft+"");
@@ -263,12 +242,6 @@ public class RksjActivity extends BaseActivity implements IMvpView {
                 holder.mNum.setText("0");
             }
             storePositionId = mList.get(position).get("storePositionId") + "";
-//            String s = mList.get(position).get("positionCode").toString();
-//            int index = s.indexOf('-', s.indexOf('-') + 1);
-//            if (index >= 0) {
-//                String ss = s.substring(index + 1);
-//                holder.kuwei.setText("库位：" + ss);
-//            }
             holder.kuwei.setText("" + mList.get(position).get("positionName"));
             holder.kuqu.setText("" + mList.get(position).get("regionName"));
 
@@ -280,10 +253,7 @@ public class RksjActivity extends BaseActivity implements IMvpView {
             holder.mRightAdd.setOnClickListener(new onClick(holder));
             holder.mZs.addTextChangedListener(new leftTextWatch(holder));
             holder.mNum.addTextChangedListener(new rightTextWatch(holder));
-//            map = new ArrayMap();
-
             mDatamap.put("stockInDetailId", mDetailId);
-//            mDatamap.put("actPackageNum", left + "");
             mDatamap.put("actNum", (mLeft*mPackageCount + mRight) + "");
             mDatamap.put("storePositionId", storePositionId);
 //            list.add(map);

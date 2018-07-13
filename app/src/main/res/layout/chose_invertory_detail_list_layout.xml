@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/head_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,7 +33,7 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
-                android:text="盘点管理"
+                android:text="选盘详情"
                 android:textColor="@color/white"
                 android:textSize="25sp" />
 
@@ -40,7 +41,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-50dp"
+            android:layout_marginTop="-45dp"
             android:background="@drawable/back"
             android:orientation="vertical">
 
@@ -51,12 +52,15 @@
                 android:padding="10dp">
 
                 <TextView
+                    android:id="@+id/order_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="盘点单号：4518451154544545454"
+                    android:text="盘点单号："
                     android:textColor="@color/back"
-                    android:textSize="14sp" />
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/status_text"
@@ -84,44 +88,86 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/current_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:src="@mipmap/ic_symbol"/>
                     <TextView
                         android:id="@+id/current_pandian"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/current_image"
                         android:textColor="@color/back"
-                        android:layout_weight="5"
-                        android:textSize="14sp"
-                        android:text="151515/"/>
+                        android:layout_centerVertical="true"
+                        android:textSize="13sp"
+                        android:text="0/"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="5dp"
+                        android:textSize="12sp"
+                        android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/current_pandian"
                         android:text="当前盘点总库存"/>
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_weight="1.2"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/dai_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:src="@mipmap/ic_symbol"/>
+                    <TextView
+                        android:id="@+id/daipandian_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/dai_image"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/back"
+                        android:textSize="13sp"
+                        android:text="0/"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/daipandian_text"
+                        android:text="待盘点货品条目"/>
+                </RelativeLayout>
             </LinearLayout>
-
         </LinearLayout>
         <com.jcodecraeer.xrecyclerview.XRecyclerView
             android:id="@+id/invertory_detail_list_recyview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:paddingBottom="25dp"/>
     </LinearLayout>
-
-
-    <Button
-        android:id="@+id/sub_btn"
+    <com.whmaster.tl.whmaster.widget.SlideView2
+        android:id="@+id/detail_list_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_height="53dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/bg_selector_style2"
-        android:text="盘点完成"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/bg_my_style16_2"
+        app:lock_drawable="@drawable/ic_slipright"
+        android:layout_alignParentBottom="true"
+        app:lock_radius="30dp"
+        app:lock_tips_tx="向右滑动完成"
+        app:lock_tips_tx_color="#ffffff"
+        app:locl_tips_tx_size="16sp"
+        app:lock_success="下一步"
+        />
 </RelativeLayout>

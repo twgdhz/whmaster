@@ -732,5 +732,34 @@ public class StoragePresenter extends BasePresenter implements StorageInterface{
         });
     }
 
+    @Override
+    public void getInventoryCount() {
+        Map map = new HashMap();
+        map.put("token",Constants.token);
+        RetrofitHttp.getInstance(mContext).postJson(Constants.getInventoryCount, map, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                mImvpView.hideLoading();
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.i("com.whmaster.tl.whmaster>>返回数据",e+"=====onError=======");
+                mImvpView.hideLoading();
+            }
+            @Override
+            public void onNext(String s) {
+                mDataMap = Constants.getJsonObjectByData(s);
+                if(mDataMap!=null && mDataMap.get("resultCode").equals("0000")){
+                    mTempMap = Constants.getJsonObject(s);
+                    mImvpView.onSuccess("getInventoryCount",mTempMap);
+                }else{
+                    mImvpView.onFail(mDataMap.get("resultMessage")+"");
+                }
+                mImvpView.hideLoading();
+                Log.i("com.whmaster.tl.whmaster>>获取盘点数量",s+"========");
+            }
+        });
+    }
+
 
 }

@@ -228,14 +228,12 @@ public class StorageGoodsActivity extends BaseActivity implements IMvpView {
             holder.mContentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mList.get(position).get("stockInDetailStatus").toString().equals("10")){
+//                    if(mList.get(position).get("stockInDetailStatus").toString().equals("10")){
                         Bundle bundle = new Bundle();
                         bundle.putString("detailId", mList.get(position).get("stockInDetailId") + "");
                         bundle.putString("businessType", mList.get(position).get("stockInDetailStatus") + "");
-//                        bundle.putString("type", "storage");
-//                        openActivityForResult(GoodsShelvesActivity.class,0,bundle);
                         openActivityForResult(RksjActivity.class,0,bundle);
-                    }
+//                    }
                 }
             });
         }

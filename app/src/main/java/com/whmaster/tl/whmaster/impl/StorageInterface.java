@@ -39,4 +39,5 @@ public interface StorageInterface {
     void queryUnfinishedMaterialCount();//实物收货数量获取
 
     void getReviewCount();//拣货复核数量
+    void getInventoryCount();//拣货复核数量
 }

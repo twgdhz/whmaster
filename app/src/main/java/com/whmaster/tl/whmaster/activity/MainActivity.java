@@ -38,11 +38,11 @@ public class MainActivity extends BaseActivity implements IMvpView{
     private Button mZxBtn;
     private XRecyclerView mRecyclerView;
     private RecyAdapter mAdapter;
-    private int[] mImageIds={R.mipmap.ic_sh,R.mipmap.ic_rk,R.mipmap.ic_ck,R.mipmap.ic_fh,R.mipmap.ic_yd,R.mipmap.ic_yd};
+    private int[] mImageIds={R.mipmap.ic_sh,R.mipmap.ic_rk,R.mipmap.ic_ck,R.mipmap.ic_fh,R.mipmap.ic_yd,R.mipmap.ic_pd};
     private String[] mNames={"实物收货","入库上架","拣货出库","装车复核","移库管理","盘点管理"};
     private UserPresenter userPresenter;
     private StoragePresenter storagePresenter;
-    private String mStorageCount="0",mTaskCount="0",mFhCount="0",mShCount = "0";
+    private String mStorageCount="0",mTaskCount="0",mFhCount="0",mShCount = "0",mInventoryCount = "0";
     private MyBroadcastReceiver myBroadcastReceiver;
     public static String broadcastFlag = "main";
     private LinearLayout mTitleLayout,mHeadLayout;
@@ -67,10 +67,7 @@ public class MainActivity extends BaseActivity implements IMvpView{
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable(){
                     public void run() {
-                        storagePresenter.queryUnfinishedMaterialCount();
-                        storagePresenter.getStockConut();
-                        storagePresenter.getTaskCount();
-                        storagePresenter.getReviewCount();
+                        getHttpCount();
                         mRecyclerView.refreshComplete();
                     }
                 }, 1000);
@@ -82,11 +79,7 @@ public class MainActivity extends BaseActivity implements IMvpView{
 
         mRecyclerView.setAdapter(mAdapter);
 
-        storagePresenter.queryUnfinishedMaterialCount();
-        storagePresenter.getStockConut();
-        storagePresenter.getTaskCount();
-        storagePresenter.getReviewCount();
-
+        getHttpCount();
         myBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(broadcastFlag);    //只有持有相同的action的接受者才能接收此广播
@@ -128,14 +121,17 @@ public class MainActivity extends BaseActivity implements IMvpView{
         logcat("获取返回的监听");
         switch (requestCode){
             case 0:
-                storagePresenter.queryUnfinishedMaterialCount();
-                storagePresenter.getStockConut();
-                storagePresenter.getTaskCount();
-                storagePresenter.getReviewCount();
+                getHttpCount();
                 break;
         }
     }
-
+    private void getHttpCount(){
+        storagePresenter.queryUnfinishedMaterialCount();
+        storagePresenter.getStockConut();
+        storagePresenter.getTaskCount();
+        storagePresenter.getReviewCount();
+        storagePresenter.getInventoryCount();
+    }
     @Override
     public void initListeners() {
         super.initListeners();
@@ -171,22 +167,26 @@ public class MainActivity extends BaseActivity implements IMvpView{
             //入库单数
             case "getStorageCount":
                 mStorageCount = map.get("value").toString();
-                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
+                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount,mInventoryCount);
                 break;
             //拣货单数
             case "getTaskCount":
                 mTaskCount = map.get("value").toString();
-                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
+                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount,mInventoryCount);
                 break;
             //拣货复核
             case "getFhCount":
                 mFhCount = map.get("value").toString();
-                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
+                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount,mInventoryCount);
                 break;
             //实物收货
             case "queryUnfinishedMaterialCount":
                 mShCount = map.get("value").toString();
-                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount);
+                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount,mInventoryCount);
+                break;
+            case "getInventoryCount":
+                mInventoryCount = map.get("value").toString();
+                mAdapter.notifiAdapter(mStorageCount,mTaskCount,mFhCount,mShCount,mInventoryCount);
                 break;
         }
     }
@@ -215,15 +215,12 @@ public class MainActivity extends BaseActivity implements IMvpView{
         @Override
         public void onReceive(Context context, Intent intent) {
             logcat("接收广播==============");
-            storagePresenter.queryUnfinishedMaterialCount();
-            storagePresenter.getStockConut();
-            storagePresenter.getTaskCount();
-            storagePresenter.getReviewCount();
+           getHttpCount();
         }
     }
 
     class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.MyViewHolder>{
-        private String storagCount="0",taskCount="0",fhCount = "0",shshCount = "0";
+        private String storagCount="0",taskCount="0",fhCount = "0",shshCount = "0",minventoryCount = "0";
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
@@ -231,11 +228,12 @@ public class MainActivity extends BaseActivity implements IMvpView{
                     false));
             return holder;
         }
-        public void notifiAdapter(String storagecount,String taskcount,String fhcount,String shshcount){
+        public void notifiAdapter(String storagecount,String taskcount,String fhcount,String shshcount,String inventoryCount){
             storagCount = storagecount;
             taskCount = taskcount;
             fhCount = fhcount;
             shshCount = shshcount;
+            minventoryCount = inventoryCount;
             this.notifyDataSetChanged();
         }
         @Override
@@ -281,6 +279,14 @@ public class MainActivity extends BaseActivity implements IMvpView{
                 case 3:
                     if(!fhCount.equals("") && !fhCount.equals("0")){
                         holder.mConuntText.setText(fhCount);
+                        holder.mConuntText.setVisibility(View.VISIBLE);
+                    }else{
+                        holder.mConuntText.setVisibility(View.GONE);
+                    }
+                    break;
+                case 5:
+                    if(!minventoryCount.equals("") && !minventoryCount.equals("0")){
+                        holder.mConuntText.setText(minventoryCount);
                         holder.mConuntText.setVisibility(View.VISIBLE);
                     }else{
                         holder.mConuntText.setVisibility(View.GONE);

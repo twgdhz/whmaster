@@ -25,7 +25,6 @@ import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by admin on 2018/1/23.
@@ -232,6 +231,7 @@ public class ReviewListActivity extends BaseActivity implements IMvpView {
         }
 
         public void notifiList(ArrayList<ArrayMap<String, Object>> list) {
+            mList.addAll(list);
             this.notifyDataSetChanged();
         }
 

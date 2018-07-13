@@ -238,7 +238,7 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
-            packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+
             mList.get(position).put("moveNum","0");
             if(mList.get(position).get("productName")!=null){
                 holder.productName.setText(mList.get(position).get("productName").toString());
@@ -255,6 +255,8 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
             if(mList.get(position).get("inventoryNum")!=null){
                 holder.sumNumbers.setText(mList.get(position).get("baseUnitCn").toString());
             }
+            packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+            if(packageCount<=0) packageCount = 1;
             moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
             moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
             inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
@@ -274,6 +276,7 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
                     isNum = true;
                     int m = 0,sum = 0,zs = 0;
                     packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+                    if(packageCount<=0) packageCount = 1;
                     moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
                     moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
                     inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
@@ -314,6 +317,7 @@ public class ChooseGoodsNumbersActivity extends BaseActivity implements IMvpView
                     int m = 0,sum = 0,zs = 0;
                     packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
                     inventoryNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString());
+                    if(packageCount<=0) packageCount = 1;
                     moveNum = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) % packageCount;
                     moveZs = Integer.parseInt(mList.get(position).get("inventoryNum").toString()) / packageCount;
                     int packCount = Integer.parseInt(mList.get(position).get("packageCount").toString());

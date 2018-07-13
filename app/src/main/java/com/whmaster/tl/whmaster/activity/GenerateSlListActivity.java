@@ -325,6 +325,9 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             //设置内容布局的宽为屏幕宽度
+            try{
+
+
             holder.mContentLayout.getLayoutParams().width = ScreenUtils.getScreenWidth(GenerateSlListActivity.this);
             holder.mProductName.setText("货品名称：" + mList.get(position).get("productName"));
             int sum = 0;
@@ -334,12 +337,15 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
                 sum = Integer.parseInt(mList.get(position).get("planNum").toString());
             }
             if(mList.get(position).get("planNum")!=null && mList.get(position).get("packageCount")!=null){
-                mPlanPackageNum = sum / Integer.parseInt(mList.get(position).get("packageCount").toString());
-                int numCount = sum % Integer.parseInt(mList.get(position).get("packageCount").toString());
-                mList.get(position).put("planPackageNum",mPlanPackageNum+"");
-                mList.get(position).put("planNum",numCount+"");
+                int packageCount = Integer.parseInt(mList.get(position).get("packageCount").toString());
+                if(packageCount<=0) packageCount = 1;
+                if(packageCount>0){
+                    mPlanPackageNum = sum / packageCount;
+                    int numCount = sum % packageCount;
+                    mList.get(position).put("planPackageNum",mPlanPackageNum+"");
+                    mList.get(position).put("planNum",numCount+"");
+                }
             }
-
             holder.mProductNum.setText("货品数量：" + sum);
 
             if (mList.get(position).get("regionName") != null) {
@@ -404,14 +410,6 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
                                 int sumplanNum = oldplanNum + newplanNum;
                                 mList.get(i).put("planNum", sumplanNum + "");
                                 logcat(position+"选择的数据============"+ mList.get(i));
-//                                if (mList.get(i).get("regionName") != null) {
-//                                    if(mList.get(position).get("planPackageNum")!=null && !mList.get(position).get("planPackageNum").toString().equals("")){
-//                                        int num = Integer.parseInt(mList.get(position).get("planPackageNum").toString()) * Integer.parseInt(mList.get(position).get("packageCount").toString()) + Integer.parseInt(mList.get(position).get("planNum").toString());
-////                                        mUnassignedNum = mUnassignedNum + Integer.parseInt(mList.get(position).get("planPackageNum").toString());
-//                                        mUnassignedNum = mUnassignedNum + num;
-//                                    }
-//                                    mUnassigned.setText("未分配：" + mUnassignedNum);
-//                                }
                                 break;
                             }
                         }
@@ -435,8 +433,10 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
                 holder.mSlidRight.getLayoutParams().width = DensityUtils.dp2px(GenerateSlListActivity.this, 75);
                 holder.mDeleteText.setVisibility(View.GONE);
             }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-
         @Override
         public int getItemCount() {
             return mList.size();
@@ -455,7 +455,6 @@ public class GenerateSlListActivity extends BaseActivity implements IMvpView {
                 }
             }
         }
-
         //关闭菜单
         public void closeMenu() {
             mMenu.closeMenu();

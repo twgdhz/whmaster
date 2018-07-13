@@ -191,7 +191,7 @@ public class SlideView2 extends View{
         mLocationX = 0;
         invalidate();
     }
-    private void resetLocationX(float eventXPos,float rightMax){
+    public void resetLocationX(float eventXPos,float rightMax){
         float xPos = eventXPos;
         mLocationX = xPos - mLockRadius;
         if (mLocationX < 0) {

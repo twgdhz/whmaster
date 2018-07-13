@@ -4,12 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,8 @@ import com.whmaster.tl.whmaster.utils.RecyclerUtil;
 import com.whmaster.tl.whmaster.view.IMvpView;
 
 import java.util.ArrayList;
+
+import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
 /**
  * Created by admin on 2017/11/16.
@@ -50,6 +55,8 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
     private TextView mTitleName;
     private ImageView mBackImage;
     private InputMethodManager imm;
+    private String mKeyString = "";
+
     @Override
     protected int getLayoutId() {
         return R.layout.chose_library_layout;
@@ -115,10 +122,9 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
                 if(mRecyclerView.getVisibility()!=View.VISIBLE){
                     mRecyclerView.setVisibility(View.VISIBLE);
                 }
-//                if(mKuweiEdit.getText().toString().equals("")){
-//                    mPositionPointCode = "";
-//                }
-                mPositionCode = s.toString();
+
+                mKeyString = mPositionCode = s.toString();
+
                 libraryPresenter.getMovePosition(mPositionCode,mKuweiEdit.getText().toString());
             }else{
                 mRecyclerView.setVisibility(View.GONE);
@@ -145,7 +151,7 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
                 if(mRecyclerView.getVisibility()!=View.VISIBLE){
                     mRecyclerView.setVisibility(View.VISIBLE);
                 }
-                mPositionPointCode = s.toString();
+                mKeyString =  mPositionPointCode = s.toString();
                 libraryPresenter.getMovePosition(mKuquEdit.getText().toString(),mPositionPointCode);
             }else{
 
@@ -258,8 +264,15 @@ public class ChooseLibraryActivity extends BaseActivity implements IMvpView {
         }
         @Override
         public void onBindViewHolder(RecyAdapter.MyViewHolder holder, final int position) {
+
             if(mList.get(position).get("positionCode")!=null){
-                holder.name.setText(mList.get(position).get("positionCode")+"");
+                SpannableStringBuilder builder = new SpannableStringBuilder(mList.get(position).get("positionCode").toString());
+                int indexOf = mList.get(position).get("positionCode").toString().indexOf(mKeyString);
+                if (indexOf != -1) {
+                    builder.setSpan(new ForegroundColorSpan(Color.RED), indexOf, indexOf + mKeyString.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                holder.name.setText(builder);
+//                holder.name.setText(mList.get(position).get("positionCode")+"");
             }
             holder.mContentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

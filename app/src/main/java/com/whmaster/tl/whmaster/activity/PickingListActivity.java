@@ -210,6 +210,7 @@ public class PickingListActivity extends BaseActivity implements IMvpView{
             return holder;
         }
         public void notifiList(ArrayList<ArrayMap<String, Object>> list) {
+            mList.addAll(list);
             this.notifyDataSetChanged();
         }
         @Override

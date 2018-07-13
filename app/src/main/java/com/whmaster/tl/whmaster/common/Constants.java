@@ -23,8 +23,8 @@ import java.util.Iterator;
  * Created by Administrator on 2016/9/7.
  */
 public class Constants {
-    public static final String apiHead = "http://api.local.tianlu56.com.cn/";//测试环境
-//        public static final String apiHead = "https://wmsapi.tianlu56.com.cn/";//生产环境
+//    public static final String apiHead = "http://api.fat.tianlu56.com.cn/";//测试环境
+        public static final String apiHead = "https://wmsapi.tianlu56.com.cn/";//生产环境
     public static String token = "",mUsername="",mPwd="";
     //登陆
 //    public static final String login = apiHead + "sys/sys/loginApp";
@@ -143,6 +143,16 @@ public class Constants {
     public static final String getProductByPosition = apiHead + "whsc/transferWarehouse/getProductByPosition";
     //移入库位
     public static final String save = apiHead + "whsc/transferWarehouse/save";
+    //查询盘点单列表
+    public static final String inventoryList = apiHead + "whsc/stocktaking/app/list";
+    //查询盘点单详情列表
+    public static final String detailList = apiHead + "whsc/stocktaking/app/detail";
+    //盘点明细确定操作
+    public static final String update = apiHead + "whsc/stocktaking/app/update";
+    //完成盘点
+    public static final String end = apiHead + "whsc/stocktaking/app/end";
+    //完成盘点
+    public static final String getInventoryCount = apiHead + "whsc/stocktaking/app/queryStocktakingNum";
 
     public static Object getGsonObject(String json, Object o) {
         Gson g = new Gson();
@@ -196,7 +206,24 @@ public class Constants {
         }
         return map2;
     }
+    public static ArrayList<ArrayMap<String, Object>> getJsonArrayByValue(String json) {
+        ArrayMap<String, Object> map = new ArrayMap<String, Object>();
+        ArrayList<ArrayMap<String, Object>> list = new ArrayList<ArrayMap<String, Object>>();
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            Iterator<?> it = jsonObject.keys();
+            String a;
+            while (it.hasNext()) {
+                a = it.next().toString();
+                map.put(a, jsonObject.get(a).toString());
+            }
+            list = getJsonArray(map.get("list").toString());
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     // 解析json数组数据
     public static ArrayList<ArrayMap<String, Object>> getJsonArray(
             String jsonString) {
